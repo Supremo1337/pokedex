@@ -1,10 +1,25 @@
 import * as S from "./styles";
 
-export default function SearchBar() {
+interface SearchBarProps {
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  value: string;
+}
+
+export default function SearchBar({
+  onChange = () => {},
+  onClick = () => {},
+  value = "",
+}: SearchBarProps) {
   return (
     <S.Container>
-      <S.InputSearch type="search" placeholder="Pesquise o pokémon..." />
-      <S.Icon />
+      <S.InputSearch
+        type="search"
+        placeholder="Procure o pokemon por nome ou ID..."
+        onChange={onChange}
+        value={value}
+      />
+      <S.Icon onClick={onClick} />
     </S.Container>
   );
 }

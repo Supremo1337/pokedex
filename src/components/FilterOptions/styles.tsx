@@ -8,4 +8,7 @@ export const Container = styled.div`
   overflow-x: scroll;
   height: 80px;
   padding-right: 1px;
+  @media (min-width: 573px) {
+    overflow-x: hidden;
+  }
 `;
