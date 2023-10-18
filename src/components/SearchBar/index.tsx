@@ -18,6 +18,7 @@ export default function SearchBar({
         placeholder="Procure o pokemon por nome ou ID..."
         onChange={onChange}
         value={value}
+        name="search"
       />
       <S.Icon onClick={onClick} />
     </S.Container>

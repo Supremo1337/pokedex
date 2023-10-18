@@ -2,7 +2,7 @@ import Head from "next/head";
 import SearchBar from "@/components/SearchBar";
 import FilterOptions from "@/components/FilterOptions";
 import CardPokemon from "@/components/CardPokemon";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Wrapper } from "@/components/CardPokemon/styles";
 
@@ -10,22 +10,32 @@ interface PokemonsProps {
   image: string;
   number: number;
   name: string;
+  page: number;
+  limit: number;
+}
+
+interface PokemonLimitProps {
+  limit: number;
+  offSet: number;
 }
 
 export default function Home() {
-  const [pokemons, setPokemons] = useState<any[]>();
+  const [pokemons, setPokemons] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
-  const [selectedType, setSelectedType] = useState({});
+  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const divInfiniteScrollRef = useRef<HTMLDivElement>(null);
+  // const [oldData, setOldData] = useState([]);
+  // const [offSet, setOffset] = useState(0);
+  const [isClicked, setIsClicked] = useState(false);
 
-  useEffect(() => {
-    getPokemons();
-  }, []);
+  var limit = 33;
 
   const getPokemons = () => {
     setLoading(false);
     var endpoints = [];
-    for (var i = 1; i < 49; i++) {
+
+    for (var i = 1; i < limit; i++) {
       endpoints.push(`https://pokeapi.co/api/v2/pokemon/${i}/`);
     }
     var response = axios
@@ -35,19 +45,50 @@ export default function Home() {
         )
       )
       .then((res) => {
-        setPokemons(res);
-        console.log(res);
+        setPokemons([...res, res]);
+        // console.log(res);
         setLoading(true);
       });
-    console.log(endpoints);
+    // console.log(endpoints);
   };
 
-  const pokemonFiltrado =
-    pokemons?.filter(
-      (pokemon) =>
-        pokemon.data.name.includes(search.toLowerCase()) ||
-        pokemon.data.id.toString().includes(search)
-    ) || [];
+  useEffect(() => {
+    getPokemons();
+  }, []);
+
+  const filterPokemonsByType = (type: string) => {
+    setSearch(""); // Limpar a pesquisa quando o tipo é alterado
+    setSelectedType(type);
+  };
+
+  const pokemonFiltrado = selectedType
+    ? pokemons?.filter(
+        (pokemon) =>
+          // pokemon.data?.name.includes(search.toLowerCase()) ||
+          // pokemon.data?.id.toString().includes(search) ||
+          pokemon.data?.types[0].type.name === selectedType ||
+          (pokemon.data?.types[1]?.type.name === selectedType &&
+            pokemon.data?.types[0].type.name === selectedType)
+      ) || []
+    : pokemons;
+
+  useEffect(() => {
+    const intersectionObserver = new IntersectionObserver(([entry]) => {
+      const ratio = entry.intersectionRatio;
+      if (ratio > 0) {
+        console.log("OLHAAA AQ ratio", ratio);
+        limit = limit + 33;
+        getPokemons();
+      }
+    });
+
+    if (divInfiniteScrollRef.current) {
+      intersectionObserver.observe(divInfiniteScrollRef.current);
+    }
+    return () => {
+      intersectionObserver.disconnect;
+    };
+  }, [divInfiniteScrollRef]);
 
   return (
     <>
@@ -58,18 +99,19 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SearchBar value={search} onChange={(e) => setSearch(e.target.value)} />
-      <FilterOptions onChangeType={(e) => console.log(e.target.value)} />
-      {loading ? (
-        <>
-          <Wrapper>
+      <FilterOptions onChangeType={filterPokemonsByType} />
+      <Wrapper>
+        {loading ? (
+          <>
             {pokemonFiltrado.map((pokemon, index) => {
               return <CardPokemon key={index} pokemon={pokemon} />;
             })}
-          </Wrapper>
-        </>
-      ) : (
-        "loading..."
-      )}
+          </>
+        ) : (
+          "loading..."
+        )}
+      </Wrapper>
+      <div ref={divInfiniteScrollRef} />
     </>
   );
 }

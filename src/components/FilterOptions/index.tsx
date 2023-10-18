@@ -4,7 +4,7 @@ import { SelectIcon, SelectOption } from "../SelectComponent/styles";
 import { useState } from "react";
 
 interface FilterOptionsProps {
-  onChangeType?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChangeType?: (type: string) => void;
   onChangeHeight?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onChangeWeight?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
@@ -18,7 +18,10 @@ export default function FilterOptions({
     <S.Container>
       <SelectMain.Root>
         <SelectIcon icon="dittoicon" />
-        <SelectMain.Select onChange={onChangeType}>
+        <SelectMain.Select
+          id="selectType"
+          onChange={(e) => onChangeType(e.target.value)}
+        >
           <SelectOption>Tipo</SelectOption>
           <SelectOption value="bug">bug</SelectOption>
           <SelectOption value="dark">dark</SelectOption>
@@ -42,13 +45,13 @@ export default function FilterOptions({
       </SelectMain.Root>
       <SelectMain.Root>
         <SelectIcon icon="dratiniicon" />
-        <SelectMain.Select onChange={onChangeHeight}>
+        <SelectMain.Select id="selectHeight" onChange={onChangeHeight}>
           <SelectOption>Altura</SelectOption>
         </SelectMain.Select>
       </SelectMain.Root>
       <SelectMain.Root>
         <SelectIcon icon="snorlaxicon" />
-        <SelectMain.Select onChange={onChangeWeight}>
+        <SelectMain.Select id="selectWeight" onChange={onChangeWeight}>
           <SelectOption>Peso</SelectOption>
         </SelectMain.Select>
       </SelectMain.Root>

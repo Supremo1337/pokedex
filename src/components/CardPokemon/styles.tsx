@@ -3,7 +3,7 @@ import { theme } from "@/styles/themes";
 import styled from "styled-components";
 
 interface PokemonImageProps {
-  bgImage: string;
+  $bgImage: string;
 }
 
 interface BackgroundPokemonProps {
@@ -44,15 +44,23 @@ export const BackgroundPokemon = styled.div<BackgroundPokemonProps>`
   justify-content: center;
 `;
 
-export const PokemonNumber = styled.label`
+export const PokemonNumber = styled.p`
   font: ${theme.fonts.dmSans.paragraph_2};
   color: ${theme.colors.gray.gray_800};
 `;
 
-export const PokemonName = styled.label`
+export const PokemonName = styled.p`
   text-transform: capitalize;
   font: ${theme.fonts.poppins.title_2};
   color: ${theme.colors.black.black_700};
+`;
+
+export const TypesGroup = styled.div`
+  height: 56px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 export const TypeCard = styled.div<BackgroundPokemonProps>`
@@ -76,12 +84,13 @@ export const Wrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 13px;
+  min-height: 100vh;
 `;
 
 export const PokemonImage = styled.div<PokemonImageProps>`
   width: 85%;
   height: 85%;
-  background-image: ${(props) => props.bgImage};
+  background-image: ${(props) => props.$bgImage};
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
