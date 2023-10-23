@@ -5,14 +5,7 @@ import CardPokemon from "@/components/CardPokemon";
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Wrapper } from "@/components/CardPokemon/styles";
-
-interface PokemonsProps {
-  image: string;
-  number: number;
-  name: string;
-  page: number;
-  limit: number;
-}
+import { usePokeApiRequest } from "@/components/contexts/pokeApiRequestContext";
 
 interface PokemonLimitProps {
   limit: number;
@@ -20,65 +13,54 @@ interface PokemonLimitProps {
 }
 
 export default function Home() {
-  const [pokemons, setPokemons] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const {
+    pokemons,
+    setPokemons,
+    allpokemons,
+    setAllPokemons,
+    getPokemons,
+    loading,
+  } = usePokeApiRequest();
   const [search, setSearch] = useState("");
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const divInfiniteScrollRef = useRef<HTMLDivElement>(null);
-  // const [oldData, setOldData] = useState([]);
-  // const [offSet, setOffset] = useState(0);
-  const [isClicked, setIsClicked] = useState(false);
-
-  var limit = 33;
-
-  const getPokemons = () => {
-    setLoading(false);
-    var endpoints = [];
-
-    for (var i = 1; i < limit; i++) {
-      endpoints.push(`https://pokeapi.co/api/v2/pokemon/${i}/`);
-    }
-    var response = axios
-      .all(
-        endpoints.map(
-          async (endpoint) => await axios.get<PokemonsProps>(endpoint)
-        )
-      )
-      .then((res) => {
-        setPokemons([...res, res]);
-        // console.log(res);
-        setLoading(true);
-      });
-    // console.log(endpoints);
-  };
 
   useEffect(() => {
     getPokemons();
   }, []);
 
   const filterPokemonsByType = (type: string) => {
-    setSearch(""); // Limpar a pesquisa quando o tipo é alterado
+    // setSearch("");
     setSelectedType(type);
   };
 
-  const pokemonFiltrado = selectedType
-    ? pokemons?.filter(
-        (pokemon) =>
-          // pokemon.data?.name.includes(search.toLowerCase()) ||
-          // pokemon.data?.id.toString().includes(search) ||
-          pokemon.data?.types[0].type.name === selectedType ||
-          (pokemon.data?.types[1]?.type.name === selectedType &&
-            pokemon.data?.types[0].type.name === selectedType)
-      ) || []
-    : pokemons;
+  const pokemonFiltrado =
+    pokemons?.filter((pokemon) => {
+      // Condição para filtrar por tipo
+      const typeCondition =
+        selectedType && selectedType !== "type"
+          ? pokemon.data?.types.some(
+              (type: any) => type.type.name === selectedType
+            )
+          : pokemons;
+
+      // Condição para filtrar por pesquisa
+      // const searchCondition =
+      //   !search ||
+      //   pokemon.data?.name.toLowerCase().includes(search.toLowerCase()) ||
+      //   pokemon.data?.id.toString().includes(search);
+
+      // Combinação das condições
+      return typeCondition;
+    }) || [];
 
   useEffect(() => {
     const intersectionObserver = new IntersectionObserver(([entry]) => {
       const ratio = entry.intersectionRatio;
       if (ratio > 0) {
         console.log("OLHAAA AQ ratio", ratio);
-        limit = limit + 33;
-        getPokemons();
+        // limit = limit + 33;
+        // getPokemons();
       }
     });
 
@@ -98,7 +80,26 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <SearchBar value={search} onChange={(e) => setSearch(e.target.value)} />
+      <SearchBar
+        onClick={() => {
+          if (search === "") {
+            setPokemons(allpokemons);
+            console.log(allpokemons);
+          } else {
+            const filteredPokemons = pokemons.filter(
+              (pokemon) =>
+                pokemon.data?.name
+                  .toLowerCase()
+                  .includes(search.toLowerCase()) ||
+                pokemon.data?.id.toString().includes(search)
+            );
+            setPokemons(filteredPokemons);
+            console.log("Pokemons Pesquisados", filteredPokemons);
+          }
+        }}
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
       <FilterOptions onChangeType={filterPokemonsByType} />
       <Wrapper>
         {loading ? (
@@ -111,7 +112,7 @@ export default function Home() {
           "loading..."
         )}
       </Wrapper>
-      <div ref={divInfiniteScrollRef} />
+      {pokemonFiltrado.length > 16 ? <div ref={divInfiniteScrollRef} /> : ""}
     </>
   );
 }

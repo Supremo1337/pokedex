@@ -2,7 +2,7 @@ import * as S from "./styles";
 
 interface SearchBarProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onClick?: any;
   value: string;
 }
 

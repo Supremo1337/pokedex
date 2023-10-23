@@ -22,11 +22,11 @@ export default function FilterOptions({
           id="selectType"
           onChange={(e) => onChangeType(e.target.value)}
         >
-          <SelectOption>Tipo</SelectOption>
+          <SelectOption value="type">Tipo</SelectOption>
           <SelectOption value="bug">bug</SelectOption>
           <SelectOption value="dark">dark</SelectOption>
           <SelectOption value="dragon">dragon</SelectOption>
-          <SelectOption value="eletric">eletric</SelectOption>
+          <SelectOption value="electric">electric</SelectOption>
           <SelectOption value="fairy">fairy</SelectOption>
           <SelectOption value="fighting">fighting</SelectOption>
           <SelectOption value="fire">fire</SelectOption>

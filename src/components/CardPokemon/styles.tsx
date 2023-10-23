@@ -51,7 +51,7 @@ export const PokemonNumber = styled.p`
 
 export const PokemonName = styled.p`
   text-transform: capitalize;
-  font: ${theme.fonts.poppins.title_2};
+  font: ${theme.fonts.poppins.title_4};
   color: ${theme.colors.black.black_700};
 `;
 
@@ -84,7 +84,7 @@ export const Wrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 13px;
-  min-height: 100vh;
+  /* min-height: 100vh; */
 `;
 
 export const PokemonImage = styled.div<PokemonImageProps>`

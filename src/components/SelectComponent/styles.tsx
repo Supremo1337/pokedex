@@ -24,6 +24,7 @@ export const SelectOption = styled.option`
   color: ${theme.colors.gray.gray_600};
   border: 1px solid #fff;
   outline: 1px solid #fff;
+  text-transform: capitalize;
 `;
 
 export const SelectIcon = styled.div<SelectIconProps>`
@@ -47,4 +48,5 @@ export const SelectStyle = styled.select`
   background: #fff;
   font: ${theme.fonts.dmSans.paragraph_1};
   color: ${theme.colors.gray.gray_600};
+  text-transform: capitalize;
 `;
