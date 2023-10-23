@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import {
   PokemonsProps,
@@ -16,7 +16,6 @@ interface PokemonSpeciesData {
       name: string;
     };
   }>;
-  // Other properties you need
 }
 
 export default function Profile() {
@@ -28,7 +27,7 @@ export default function Profile() {
 
   console.log("iddd aq", id);
 
-  const getPokemonsSpecies = async () => {
+  const getPokemonsSpecies = useCallback(async () => {
     setLoading(false);
     const response = await axios
       .get<PokemonSpeciesData>(
@@ -54,25 +53,20 @@ export default function Profile() {
           setLoading(true);
         }
       });
-  };
+  }, [id, setLoading]);
 
   useEffect(() => {
     getPokemons();
     if (id) {
       getPokemonsSpecies();
     }
-  }, [id]);
+  }, [id, getPokemons, getPokemonsSpecies]);
 
   const selectedPokemon = pokemons.find(
     (pokemon) =>
       pokemon.data?.id.toString() === id ||
       pokemon.data?.name.toLowerCase() === id
   );
-
-  // if (!selectedPokemon) {
-  //   return <p>O pokemon não encontrado</p>;
-  // }
-  // console.log("AQQQQ", selectedPokemon);
 
   return (
     <>
@@ -83,7 +77,6 @@ export default function Profile() {
             selectedPokemon={selectedPokemon}
             flavorText={flavorText}
           />
-          {/* <div>{flavorText}</div> */}
           <UniquePokemonStats
             uniquePokemon={uniquePokemon}
             selectedPokemon={selectedPokemon}

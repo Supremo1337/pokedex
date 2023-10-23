@@ -6,6 +6,7 @@ import {
   createContext,
   useContext,
   useState,
+  useCallback,
 } from "react";
 
 interface PokeApiRequestContextData {
@@ -35,7 +36,7 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
 
   var limit = 450;
 
-  const getPokemons = () => {
+  const getPokemons = useCallback(() => {
     setLoading(false);
     var endpoints = [];
 
@@ -56,7 +57,7 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
         setLoading(true);
       });
     // console.log(endpoints);
-  };
+  }, [limit]);
 
   return (
     <PokeApiRequestContext.Provider

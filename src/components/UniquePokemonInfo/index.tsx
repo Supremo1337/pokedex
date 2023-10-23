@@ -42,21 +42,15 @@ export default function UniquePokemonInfo({
       </Wrapper>
       <S.PokemonNumber>Nº 0{selectedPokemon.data?.id}</S.PokemonNumber>
       <S.Titles $font="title_2">{selectedPokemon.data?.name}</S.Titles>
+
       <S.TypesGroup>
-        {selectedPokemon.data?.types[1] ? (
-          <>
-            <S.TypeCard type={selectedPokemon.data?.types[0].type.name}>
-              {selectedPokemon.data?.types[0].type.name}
+        {selectedPokemon.data?.types.map((type: any, index: number) => {
+          return (
+            <S.TypeCard key={index} type={type.type.name}>
+              {type.type.name}
             </S.TypeCard>
-            <S.TypeCard type={selectedPokemon.data?.types[1].type.name}>
-              {selectedPokemon.data?.types[1].type.name}
-            </S.TypeCard>
-          </>
-        ) : (
-          <S.TypeCard type={selectedPokemon.data?.types[0].type.name}>
-            {selectedPokemon.data?.types[0].type.name}
-          </S.TypeCard>
-        )}
+          );
+        })}
       </S.TypesGroup>
       <S.Titles $font="title_3">A pokédex Diz</S.Titles>
       <S.Description>{removeEscapeCharacters(flavorText)}</S.Description>

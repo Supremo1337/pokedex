@@ -27,7 +27,7 @@ export default function Home() {
 
   useEffect(() => {
     getPokemons();
-  }, []);
+  }, [getPokemons]);
 
   const filterPokemonsByType = (type: string) => {
     // setSearch("");
