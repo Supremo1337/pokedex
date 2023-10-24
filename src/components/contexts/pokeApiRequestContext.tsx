@@ -7,6 +7,7 @@ import {
   useContext,
   useState,
   useCallback,
+  useEffect,
 } from "react";
 
 interface PokeApiRequestContextData {
@@ -27,14 +28,16 @@ export interface PokemonsProps {
   limit: number;
 }
 
-const PokeApiRequestContext = createContext({} as PokeApiRequestContextData);
+export const PokeApiRequestContext = createContext(
+  {} as PokeApiRequestContextData
+);
 
 export function PokeApiRequestProvider({ children }: PropsWithChildren) {
   const [pokemons, setPokemons] = useState<any[]>([]);
   const [allpokemons, setAllPokemons] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  var limit = 450;
+  var limit = 33;
 
   const getPokemons = useCallback(() => {
     setLoading(false);
@@ -50,14 +53,22 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
         )
       )
       .then((res) => {
-        setPokemons([...res, res]);
-        setAllPokemons([...res, res]);
+        // setPokemons([...res, res]);
+        // setAllPokemons([...res, res]);
+        // setPokemons((prevPokemons) => [...prevPokemons, ...res]);
+        // setAllPokemons((prevAllPokemons) => [...prevAllPokemons, ...res]);
+        setPokemons(res);
+        setAllPokemons(res);
         // setPokemons((prevPokemons) => [...prevPokemons, ...res]);
         // console.log(res);
         setLoading(true);
       });
     // console.log(endpoints);
   }, [limit]);
+
+  // useEffect(() => {
+  //   getPokemons();
+  // }, [getPokemons]);
 
   return (
     <PokeApiRequestContext.Provider

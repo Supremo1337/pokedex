@@ -21,11 +21,21 @@ interface PokemonSpeciesData {
 export default function Profile() {
   const router = useRouter();
   const { id } = router.query;
-  const { pokemons, getPokemons, loading, setLoading } = usePokeApiRequest();
-  const [uniquePokemon, setUniquePokemon] = useState<any>([]);
+  const { loading, setLoading } = usePokeApiRequest();
+  const [uniquePokemon, setUniquePokemon] = useState<any>({});
   const [flavorText, setFlavorText] = useState<any>([]);
 
   console.log("iddd aq", id);
+
+  const getPokemon = useCallback(async () => {
+    setLoading(false);
+    const response = await axios
+      .get<PokemonSpeciesData>(`https://pokeapi.co/api/v2/pokemon/${id}/`)
+      .then((res) => {
+        setUniquePokemon(res);
+        setLoading(true);
+      });
+  }, [id, setLoading]);
 
   const getPokemonsSpecies = useCallback(async () => {
     setLoading(false);
@@ -49,24 +59,17 @@ export default function Profile() {
               : "";
 
           setFlavorText(flavorText);
-          setUniquePokemon(res);
           setLoading(true);
         }
       });
   }, [id, setLoading]);
 
   useEffect(() => {
-    getPokemons();
     if (id) {
+      getPokemon();
       getPokemonsSpecies();
     }
-  }, [id, getPokemons, getPokemonsSpecies]);
-
-  const selectedPokemon = pokemons.find(
-    (pokemon) =>
-      pokemon.data?.id.toString() === id ||
-      pokemon.data?.name.toLowerCase() === id
-  );
+  }, [id, getPokemon, getPokemonsSpecies]);
 
   return (
     <>
@@ -74,13 +77,9 @@ export default function Profile() {
         <>
           <UniquePokemonInfo
             uniquePokemon={uniquePokemon}
-            selectedPokemon={selectedPokemon}
             flavorText={flavorText}
           />
-          <UniquePokemonStats
-            uniquePokemon={uniquePokemon}
-            selectedPokemon={selectedPokemon}
-          />
+          <UniquePokemonStats uniquePokemon={uniquePokemon} />
         </>
       ) : (
         "Loading..."

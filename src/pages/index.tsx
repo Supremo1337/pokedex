@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Wrapper } from "@/components/CardPokemon/styles";
 import { usePokeApiRequest } from "@/components/contexts/pokeApiRequestContext";
+import Profile from "./profile/[id]";
 
 interface PokemonLimitProps {
   limit: number;
@@ -13,15 +14,11 @@ interface PokemonLimitProps {
 }
 
 export default function Home() {
-  const {
-    pokemons,
-    setPokemons,
-    allpokemons,
-    setAllPokemons,
-    getPokemons,
-    loading,
-  } = usePokeApiRequest();
+  const { pokemons, setPokemons, allpokemons, getPokemons, loading } =
+    usePokeApiRequest();
   const [search, setSearch] = useState("");
+  const [openPokemonProfileInDesktop, setOpenPokemonProfileInDesktop] =
+    useState(false);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const divInfiniteScrollRef = useRef<HTMLDivElement>(null);
 
@@ -29,6 +26,7 @@ export default function Home() {
     getPokemons();
   }, [getPokemons]);
 
+  console.log(pokemons);
   const filterPokemonsByType = (type: string) => {
     // setSearch("");
     setSelectedType(type);
@@ -72,6 +70,42 @@ export default function Home() {
     };
   }, [divInfiniteScrollRef]);
 
+  function handelKeyPress() {
+    if (search === "") {
+      setPokemons(allpokemons);
+      console.log(allpokemons);
+    } else {
+      const filteredPokemons = pokemons.filter(
+        (pokemon) =>
+          pokemon.data?.name.toLowerCase().includes(search.toLowerCase()) ||
+          pokemon.data?.id.toString().includes(search)
+      );
+      setPokemons(filteredPokemons);
+      console.log("Pokemons Pesquisados", filteredPokemons);
+    }
+  }
+  const useWindowWide = () => {
+    const [width, setWidth] = useState(0);
+
+    useEffect(() => {
+      function handleResize() {
+        setWidth(window.innerWidth);
+      }
+
+      window.addEventListener("resize", handleResize);
+
+      handleResize();
+
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }, [setWidth]);
+
+    return width;
+  };
+
+  const wide = useWindowWide();
+
   return (
     <>
       <Head>
@@ -80,22 +114,12 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      {openPokemonProfileInDesktop && wide >= 1024 ? <Profile /> : null}
+      {console.log(wide)}
       <SearchBar
-        onClick={() => {
-          if (search === "") {
-            setPokemons(allpokemons);
-            console.log(allpokemons);
-          } else {
-            const filteredPokemons = pokemons.filter(
-              (pokemon) =>
-                pokemon.data?.name
-                  .toLowerCase()
-                  .includes(search.toLowerCase()) ||
-                pokemon.data?.id.toString().includes(search)
-            );
-            setPokemons(filteredPokemons);
-            console.log("Pokemons Pesquisados", filteredPokemons);
-          }
+        onClick={() => handelKeyPress()}
+        onKeyDown={(e: KeyboardEvent) => {
+          e.key === "Enter" ? handelKeyPress() : null;
         }}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
@@ -105,7 +129,16 @@ export default function Home() {
         {loading ? (
           <>
             {pokemonFiltrado.map((pokemon, index) => {
-              return <CardPokemon key={index} pokemon={pokemon} />;
+              return (
+                <CardPokemon
+                  onClick={() =>
+                    setOpenPokemonProfileInDesktop(!openPokemonProfileInDesktop)
+                  }
+                  sizeScren={wide}
+                  key={index}
+                  pokemon={pokemon}
+                />
+              );
             })}
           </>
         ) : (

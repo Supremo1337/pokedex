@@ -3,7 +3,6 @@ import { IPokemonInfoProps } from "../CardPokemon";
 import * as S from "./styles";
 
 interface ProfileProps {
-  selectedPokemon: IPokemonInfoProps;
   uniquePokemon: IPokemonInfoProps;
   flavorText: string;
 }
@@ -13,7 +12,6 @@ const Wrapper = styled.div`
 `;
 
 export default function UniquePokemonInfo({
-  selectedPokemon,
   uniquePokemon,
   flavorText = "",
 }: ProfileProps) {
@@ -30,21 +28,21 @@ export default function UniquePokemonInfo({
   return (
     <S.Content>
       <Wrapper>
-        <S.BackgroundPokemon type={selectedPokemon?.data?.types[0].type.name}>
+        <S.BackgroundPokemon type={uniquePokemon?.data?.types[0].type.name}>
           <S.PokemonImage
             $bgImage={
-              selectedPokemon?.data?.id < 650
-                ? `url(${selectedPokemon.data?.sprites.other.dream_world.front_default})`
-                : `url(${selectedPokemon.data?.sprites.other["official-artwork"].front_default})`
+              uniquePokemon?.data?.id < 650
+                ? `url(${uniquePokemon.data?.sprites.other.dream_world.front_default})`
+                : `url(${uniquePokemon.data?.sprites.other["official-artwork"].front_default})`
             }
           />
         </S.BackgroundPokemon>
       </Wrapper>
-      <S.PokemonNumber>Nº 0{selectedPokemon.data?.id}</S.PokemonNumber>
-      <S.Titles $font="title_2">{selectedPokemon.data?.name}</S.Titles>
+      <S.PokemonNumber>Nº 0{uniquePokemon.data?.id}</S.PokemonNumber>
+      <S.Titles $font="title_2">{uniquePokemon.data?.name}</S.Titles>
 
       <S.TypesGroup>
-        {selectedPokemon.data?.types.map((type: any, index: number) => {
+        {uniquePokemon.data?.types.map((type: any, index: number) => {
           return (
             <S.TypeCard key={index} type={type.type.name}>
               {type.type.name}

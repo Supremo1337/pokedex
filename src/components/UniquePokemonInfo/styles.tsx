@@ -37,6 +37,7 @@ export const TypesGroup = styled(S.TypesGroup)`
 export const TypeCard = styled(S.TypeCard)``;
 
 export const Description = styled.div`
+  /* width: 327px; */
   font: ${theme.fonts.dmSans.paragraph_3};
   color: ${theme.colors.gray.gray_700};
   text-align: center;

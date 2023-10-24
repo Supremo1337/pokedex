@@ -11,14 +11,39 @@ export const Content = styled(S.PokemonInfo)`
   padding: 20px 0;
 `;
 
-export const GroupCardCardAbility = styled.div`
-  width: 100%;
+export const GroupStats = styled.div`
+  width: 327px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   /* grid-template-rows: 1fr 1fr 1fr; */
   justify-content: space-between;
   justify-items: center;
   row-gap: 16px;
+  margin-top: 12px;
+
+  /* background-color: blue; */
+`;
+
+export const GroupCardAbility = styled.div`
+  width: 327px;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+
+  /* background-color: red; */
+`;
+
+export const GroupCardWith3Ability = styled.div`
+  width: 327px;
+  display: grid;
+  justify-content: space-around;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  justify-items: center;
+  row-gap: 16px;
+
+  /* background-color: red; */
 `;
 
 export const CardAbility = styled.div`
