@@ -28,35 +28,110 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
   const getTypes = useCallback(async () => {
     let endpoints = [];
     if (type0) {
-      // Verifica se type0 está definido
       endpoints.push(`https://pokeapi.co/api/v2/type/${type0}/`);
     }
 
     if (type1) {
-      // Verifica se type1 está definido
       endpoints.push(`https://pokeapi.co/api/v2/type/${type1}/`);
     }
 
-    try {
-      const responses = await axios.all(
-        endpoints.map((endpoint) => axios.get(endpoint))
-      );
-      setTypes(responses);
-      console.log(responses);
-    } catch (error) {
-      console.error("Erro na solicitação da API:", error);
-    }
+    const responses = await axios
+      .all(endpoints.map((endpoint) => axios.get(endpoint)))
+      .then((res) => {
+        setTypes(res);
+      });
   }, [type0, type1]);
 
+  const type0Data = types[0]?.data.damage_relations;
+  const type1Data = types[1]?.data.damage_relations;
   // console.log(types);
+  console.log("Tipo 0:", type0Data);
+  console.log("Tipo 1:", type1Data);
 
-  // const compareType = () => {};
+  interface DamageRelations {
+    double_damage_from: Array<{ name: string }>;
+    double_damage_to: Array<{ name: string }>;
+    half_damage_from: Array<{ name: string }>;
+    half_damage_to: Array<{ name: string }>;
+    no_damage_from: Array<{ name: string }>;
+    no_damage_to: Array<{ name: string }>;
+  }
+
+  const getTypeOfDamage = useCallback(
+    (typeData: any, damageTypeName: string) => {
+      return typeData?.[damageTypeName].map((type: any) => type.name);
+    },
+    []
+  );
+
+  console.log(type0Data?.double_damage_from);
+  console.log(type1Data?.double_damage_to);
+  const compareType = useCallback(() => {
+    const Type0doubleDamageFrom = getTypeOfDamage(
+      type0Data,
+      "double_damage_from"
+    );
+    const Type0doubleDamageTo = getTypeOfDamage(type0Data, "double_damage_to");
+    const Type0halfDamageFrom = getTypeOfDamage(type0Data, "half_damage_from");
+    const Type0halfDamageTo = getTypeOfDamage(type0Data, "half_damage_to");
+    const Type0noDamageFrom = getTypeOfDamage(type0Data, "no_damage_from");
+    const Type0noDamageTo = getTypeOfDamage(type0Data, "no_damage_to");
+    const Type1doubleDamageFrom = getTypeOfDamage(
+      type1Data,
+      "double_damage_from"
+    );
+    const Type1doubleDamageTo = getTypeOfDamage(type1Data, "double_damage_to");
+    const Type1halfDamageFrom = getTypeOfDamage(type1Data, "half_damage_from");
+    const Type1halfDamageTo = getTypeOfDamage(type1Data, "half_damage_to");
+    const Type1noDamageFrom = getTypeOfDamage(type1Data, "no_damage_from");
+    const Type1noDamageTo = getTypeOfDamage(type1Data, "no_damage_to");
+    if (Type0doubleDamageFrom && Type1doubleDamageTo) {
+      for (const typeNameIgual of Type0doubleDamageFrom) {
+        if (Type1doubleDamageFrom.includes(typeNameIgual)) {
+          console.log(
+            `${typeNameIgual} is present in Type0doubleDamageFrom and Type1doubleDamageFrom`
+          );
+        }
+        if (Type1doubleDamageTo.includes(typeNameIgual)) {
+          console.log(
+            `${typeNameIgual} is present in Type0doubleDamageFrom and Type1doubleDamageTo`
+          );
+        }
+        if (Type1halfDamageFrom.includes(typeNameIgual)) {
+          console.log(
+            `${typeNameIgual} is present in Type0doubleDamageFrom and Type1halfDamageFrom`
+          );
+        }
+        if (Type1halfDamageTo.includes(typeNameIgual)) {
+          console.log(
+            `${typeNameIgual} is present in Type0doubleDamageFrom and Type1halfDamageTo`
+          );
+        }
+        if (Type1noDamageFrom.includes(typeNameIgual)) {
+          console.log(
+            `${typeNameIgual} is present in Type0doubleDamageFrom and Type1noDamageFrom`
+          );
+        }
+        if (Type1noDamageTo.includes(typeNameIgual)) {
+          console.log(
+            `${typeNameIgual} is present in Type0doubleDamageFrom and Type1noDamageTo`
+          );
+        }
+      }
+    }
+  }, [getTypeOfDamage, type0Data, type1Data]);
 
   useEffect(() => {
     if (loading) {
       getTypes();
     }
   }, [getTypes, loading]);
+
+  useEffect(() => {
+    if (loading) {
+      compareType();
+    }
+  }, [loading, compareType]);
 
   return (
     <S.Content>

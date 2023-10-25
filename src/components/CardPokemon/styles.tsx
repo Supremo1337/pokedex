@@ -82,9 +82,20 @@ export const TypeCard = styled.div<BackgroundPokemonProps>`
 
 export const Wrapper = styled.div`
   display: flex;
+`;
+
+export const Container = styled.div`
+  display: flex;
   flex-wrap: wrap;
   gap: 13px;
   /* min-height: 100vh; */
+`;
+
+export const WrapperProfileComponent = styled.div`
+  width: 327px;
+  height: 862px;
+  box-shadow: 0px 4px 4px 0px rgb(0 0 0 / 10%);
+  border-radius: 8px;
 `;
 
 export const PokemonImage = styled.div<PokemonImageProps>`

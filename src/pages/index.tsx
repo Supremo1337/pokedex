@@ -4,7 +4,7 @@ import FilterOptions from "@/components/FilterOptions";
 import CardPokemon from "@/components/CardPokemon";
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { Wrapper } from "@/components/CardPokemon/styles";
+import * as S from "@/components/CardPokemon/styles";
 import { usePokeApiRequest } from "@/components/contexts/pokeApiRequestContext";
 import Profile from "./profile/[id]";
 
@@ -84,6 +84,7 @@ export default function Home() {
       console.log("Pokemons Pesquisados", filteredPokemons);
     }
   }
+
   const useWindowWide = () => {
     const [width, setWidth] = useState(0);
 
@@ -114,7 +115,6 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {openPokemonProfileInDesktop && wide >= 1024 ? <Profile /> : null}
       {console.log(wide)}
       <SearchBar
         onClick={() => handelKeyPress()}
@@ -125,26 +125,35 @@ export default function Home() {
         onChange={(e) => setSearch(e.target.value)}
       />
       <FilterOptions onChangeType={filterPokemonsByType} />
-      <Wrapper>
-        {loading ? (
-          <>
-            {pokemonFiltrado.map((pokemon, index) => {
-              return (
-                <CardPokemon
-                  onClick={() =>
-                    setOpenPokemonProfileInDesktop(!openPokemonProfileInDesktop)
-                  }
-                  sizeScren={wide}
-                  key={index}
-                  pokemon={pokemon}
-                />
-              );
-            })}
-          </>
-        ) : (
-          "loading..."
-        )}
-      </Wrapper>
+      <S.Wrapper>
+        <S.Container>
+          {loading ? (
+            <>
+              {pokemonFiltrado.map((pokemon, index) => {
+                return (
+                  <CardPokemon
+                    onClick={() =>
+                      setOpenPokemonProfileInDesktop(
+                        !openPokemonProfileInDesktop
+                      )
+                    }
+                    sizeScren={wide}
+                    key={index}
+                    pokemon={pokemon}
+                  />
+                );
+              })}
+            </>
+          ) : (
+            "loading..."
+          )}
+        </S.Container>
+        {openPokemonProfileInDesktop && wide >= 1024 ? (
+          <S.WrapperProfileComponent>
+            <Profile />
+          </S.WrapperProfileComponent>
+        ) : null}
+      </S.Wrapper>
       {pokemonFiltrado.length > 16 ? <div ref={divInfiniteScrollRef} /> : ""}
     </>
   );

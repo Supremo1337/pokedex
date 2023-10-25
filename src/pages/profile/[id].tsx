@@ -25,7 +25,7 @@ export default function Profile() {
   const [uniquePokemon, setUniquePokemon] = useState<any>({});
   const [flavorText, setFlavorText] = useState<any>([]);
 
-  console.log("iddd aq", id);
+  // console.log("iddd aq", id);
 
   const getPokemon = useCallback(async () => {
     setLoading(false);
