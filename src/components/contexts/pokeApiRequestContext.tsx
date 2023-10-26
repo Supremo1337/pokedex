@@ -37,7 +37,7 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
   const [allpokemons, setAllPokemons] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  var limit = 33;
+  var limit = 303;
 
   const getPokemons = useCallback(() => {
     setLoading(false);

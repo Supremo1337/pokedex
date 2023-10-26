@@ -2,7 +2,7 @@ import { theme } from "@/styles/themes";
 import styled from "styled-components";
 
 interface SelectIconProps {
-  icon?: string;
+  $icon?: string;
 }
 
 export const Container = styled.div`
@@ -30,7 +30,7 @@ export const SelectOption = styled.option`
 export const SelectIcon = styled.div<SelectIconProps>`
   width: 28px;
   height: 28px;
-  background-image: ${(props) => `url("/icon/${props.icon}.svg")`};
+  background-image: ${(props) => `url("/icon/${props.$icon}.svg")`};
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;

@@ -19,7 +19,8 @@ export default function CardPokemon({
   sizeScren = 0,
 }: CardPokemonProps) {
   return (
-    <Link href={sizeScren < 1024 ? `/profile/${pokemon.data?.id}` : ""}>
+    <Link href={`/profile/${pokemon.data?.id}`}>
+      {/* <Link href={sizeScren < 1024 ? `/profile/${pokemon.data?.id}` : ""}> */}
       <S.Content onClick={onClick}>
         <S.PokemonInfo>
           <S.BackgroundPokemon type={pokemon.data?.types[0].type.name}>
@@ -44,6 +45,7 @@ export default function CardPokemon({
           })}
         </S.TypesGroup>
       </S.Content>
+      {/* </Link> */}
     </Link>
   );
 }

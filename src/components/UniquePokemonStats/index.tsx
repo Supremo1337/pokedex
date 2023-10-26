@@ -17,6 +17,7 @@ const Wrapper = styled.div`
 export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
   const { loading } = usePokeApiRequest();
   const [types, setTypes] = useState<any>([]);
+  const [weaknessOfPokemon, setWeaknessOfPokemon] = useState<any>([]);
 
   const type0 = uniquePokemon.data?.types[0].type.name;
   let type1 = "";
@@ -45,8 +46,8 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
   const type0Data = types[0]?.data.damage_relations;
   const type1Data = types[1]?.data.damage_relations;
   // console.log(types);
-  console.log("Tipo 0:", type0Data);
-  console.log("Tipo 1:", type1Data);
+  console.log(`Tipo ${uniquePokemon?.data.types[0].type.name}`, type0Data);
+  console.log(`Tipo ${uniquePokemon?.data.types[1].type.name}`, type1Data);
 
   interface DamageRelations {
     double_damage_from: Array<{ name: string }>;
@@ -64,74 +65,109 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
     []
   );
 
-  console.log(type0Data?.double_damage_from);
-  console.log(type1Data?.double_damage_to);
-  const compareType = useCallback(() => {
-    const Type0doubleDamageFrom = getTypeOfDamage(
-      type0Data,
-      "double_damage_from"
-    );
-    const Type0doubleDamageTo = getTypeOfDamage(type0Data, "double_damage_to");
-    const Type0halfDamageFrom = getTypeOfDamage(type0Data, "half_damage_from");
-    const Type0halfDamageTo = getTypeOfDamage(type0Data, "half_damage_to");
-    const Type0noDamageFrom = getTypeOfDamage(type0Data, "no_damage_from");
-    const Type0noDamageTo = getTypeOfDamage(type0Data, "no_damage_to");
-    const Type1doubleDamageFrom = getTypeOfDamage(
-      type1Data,
-      "double_damage_from"
-    );
-    const Type1doubleDamageTo = getTypeOfDamage(type1Data, "double_damage_to");
-    const Type1halfDamageFrom = getTypeOfDamage(type1Data, "half_damage_from");
-    const Type1halfDamageTo = getTypeOfDamage(type1Data, "half_damage_to");
-    const Type1noDamageFrom = getTypeOfDamage(type1Data, "no_damage_from");
-    const Type1noDamageTo = getTypeOfDamage(type1Data, "no_damage_to");
-    if (Type0doubleDamageFrom && Type1doubleDamageTo) {
-      for (const typeNameIgual of Type0doubleDamageFrom) {
-        if (Type1doubleDamageFrom.includes(typeNameIgual)) {
-          console.log(
-            `${typeNameIgual} is present in Type0doubleDamageFrom and Type1doubleDamageFrom`
+  const propertiesToCompare = [
+    "double_damage_from",
+    "double_damage_to",
+    "half_damage_from",
+    "half_damage_to",
+    "no_damage_from",
+    "no_damage_to",
+  ];
+
+  // console.log(type0Data?.double_damage_from);
+  // console.log(type1Data?.double_damage_to);
+  const compareType = () => {
+    const weakness: string[] = [];
+    for (const property0 of propertiesToCompare) {
+      for (const property1 of propertiesToCompare) {
+        let array0 =
+          type0Data?.[property0].map((type: any) => type.name || []) || [];
+        let array1 =
+          type1Data?.[property1].map((type: any) => type.name || []) || [];
+        if (
+          property0 === "double_damage_from" &&
+          property1 === "double_damage_from"
+        ) {
+          let commonWeaknessesForTypes = array0.filter((item: any) =>
+            array1.includes(item)
           );
+          // Encontra palavras comuns entre as duas listas
+          // Adiciona as palavras comuns à lista weakness
+          weakness.push(commonWeaknessesForTypes);
+          console.log(weakness);
         }
-        if (Type1doubleDamageTo.includes(typeNameIgual)) {
-          console.log(
-            `${typeNameIgual} is present in Type0doubleDamageFrom and Type1doubleDamageTo`
+        if (
+          property0 === "double_damage_from" &&
+          (property1 === "double_damage_to" || property1 === "half_damage_from")
+        ) {
+          // se alguma palavra se repetir ele não faz nada,
+          // se não se repetir ele adiciona a palavra do array0
+          // ao array de fraquezas
+          let commonWeaknessesForTypesTo = array0.filter((item: any) =>
+            array1.includes(item)
           );
+          if (commonWeaknessesForTypesTo.length > 0) {
+            console.log("a palavra se repetiu:", commonWeaknessesForTypesTo);
+            console.log("não faz nada");
+          } else {
+            console.log("a palavra não se repetiu");
+            console.log("Adiciona as palavras do array 0 ao array de weakness");
+            if (
+              array0.filter((item: any) => !weakness.includes(item)).length > 0
+            ) {
+              weakness.push(...array0);
+            }
+          }
         }
-        if (Type1halfDamageFrom.includes(typeNameIgual)) {
-          console.log(
-            `${typeNameIgual} is present in Type0doubleDamageFrom and Type1halfDamageFrom`
-          );
-        }
-        if (Type1halfDamageTo.includes(typeNameIgual)) {
-          console.log(
-            `${typeNameIgual} is present in Type0doubleDamageFrom and Type1halfDamageTo`
-          );
-        }
-        if (Type1noDamageFrom.includes(typeNameIgual)) {
-          console.log(
-            `${typeNameIgual} is present in Type0doubleDamageFrom and Type1noDamageFrom`
-          );
-        }
-        if (Type1noDamageTo.includes(typeNameIgual)) {
-          console.log(
-            `${typeNameIgual} is present in Type0doubleDamageFrom and Type1noDamageTo`
-          );
-        }
+        // if (
+        //   property0 === "double_damage_from" &&
+        //   property1 === "half_damage_to"
+        // ) {
+        // }
+
+        // if (
+        //   property0 === "double_damage_from" &&
+        //   property1 === "no_damage_from"
+        // ) {
+        //   let commonWeaknessesForTypesdouble_damage_fromAndno_damage_from =
+        //     array0.filter((item: any) => !array1.includes(item));
+        //   if (
+        //     commonWeaknessesForTypesdouble_damage_fromAndno_damage_from.length >
+        //     0
+        //   ) {
+        //     weakness.push(
+        //       ...commonWeaknessesForTypesdouble_damage_fromAndno_damage_from
+        //     );
+        //   }
+        //   // commonWeaknessesForTypesdouble_damage_fromAndno_damage_from;
+        //   console.log("TESTEEE", weakness);
+        // }
+
+        // const array0Filtered = array0.filter(
+        //   (typeName: any) => !commmomTypeName.includes(typeName)
+        // );
+
+        // if (commmomTypeName.length > 0) {
+        //   console.log(
+        //     `O Tipo "${uniquePokemon?.data.types[0].type.name}" toma ${property0} dos tipos: "${commmomTypeName}", mas o "${uniquePokemon?.data.types[1].type.name}" toma ${property1}`
+        //   );
+        // }
+        // console.log(array0Filtered);
       }
     }
-  }, [getTypeOfDamage, type0Data, type1Data]);
+    weakness.forEach((element, index) => {
+      if (Array.isArray(element)) {
+        weakness[index] = element.join(", ");
+      }
+    });
+    setWeaknessOfPokemon(weakness);
+  };
 
   useEffect(() => {
     if (loading) {
       getTypes();
     }
   }, [getTypes, loading]);
-
-  useEffect(() => {
-    if (loading) {
-      compareType();
-    }
-  }, [loading, compareType]);
 
   return (
     <S.Content>
@@ -172,6 +208,9 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
         </S.GroupInfos>
         <S.GroupInfos>
           <Titles $font="title_3">Fraquezas</Titles>
+          <button type="button" onClick={() => compareType()}>
+            Compare TYpes
+          </button>
           {/* {types.map((type: any, index: number) => {
             return (
               <S.WeaknessCircle
@@ -186,6 +225,13 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
               </S.WeaknessCircle>
             );
           })} */}
+          {weaknessOfPokemon.map((weakness: any, index: number) => {
+            return (
+              <S.WeaknessCircle type={weakness} key={index}>
+                {weakness}
+              </S.WeaknessCircle>
+            );
+          })}
         </S.GroupInfos>
         <S.GroupInfos>
           <Titles $font="title_3">Exp Base</Titles>

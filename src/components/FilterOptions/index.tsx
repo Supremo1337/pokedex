@@ -17,7 +17,7 @@ export default function FilterOptions({
   return (
     <S.Container>
       <SelectMain.Root>
-        <SelectIcon icon="dittoicon" />
+        <SelectIcon $icon="dittoicon" />
         <SelectMain.Select
           id="selectType"
           onChange={(e) => onChangeType(e.target.value)}
@@ -44,13 +44,13 @@ export default function FilterOptions({
         </SelectMain.Select>
       </SelectMain.Root>
       <SelectMain.Root>
-        <SelectIcon icon="dratiniicon" />
+        <SelectIcon $icon="dratiniicon" />
         <SelectMain.Select id="selectHeight" onChange={onChangeHeight}>
           <SelectOption>Altura</SelectOption>
         </SelectMain.Select>
       </SelectMain.Root>
       <SelectMain.Root>
-        <SelectIcon icon="snorlaxicon" />
+        <SelectIcon $icon="snorlaxicon" />
         <SelectMain.Select id="selectWeight" onChange={onChangeWeight}>
           <SelectOption>Peso</SelectOption>
         </SelectMain.Select>
