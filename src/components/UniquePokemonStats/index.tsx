@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { IPokemonInfoProps } from "../CardPokemon";
 import * as S from "./styles";
 import { Description, Titles, TypesGroup } from "../UniquePokemonInfo/styles";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, ReactNode } from "react";
 import { usePokeApiRequest } from "../contexts/pokeApiRequestContext";
 import axios from "axios";
 
@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
   const { loading } = usePokeApiRequest();
   const [types, setTypes] = useState<any>([]);
-  const [weaknessOfPokemon, setWeaknessOfPokemon] = useState<any>([]);
+  const [weaknessOfPokemon, setWeaknessOfPokemon] = useState<ReactNode[]>([]);
 
   const type0 = uniquePokemon.data?.types[0].type.name;
   let type1 = "";
@@ -46,8 +46,8 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
   const type0Data = types[0]?.data.damage_relations;
   const type1Data = types[1]?.data.damage_relations;
   // console.log(types);
-  console.log(`Tipo ${uniquePokemon?.data.types[0].type.name}`, type0Data);
-  console.log(`Tipo ${uniquePokemon?.data.types[1].type.name}`, type1Data);
+  console.log(`Tipo ${uniquePokemon?.data?.types[0]?.type.name}`, type0Data);
+  console.log(`Tipo ${uniquePokemon?.data?.types[1]?.type.name}`, type1Data);
 
   interface DamageRelations {
     double_damage_from: Array<{ name: string }>;
@@ -65,109 +65,104 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
     []
   );
 
-  const propertiesToCompare = [
-    "double_damage_from",
-    "double_damage_to",
-    "half_damage_from",
-    "half_damage_to",
-    "no_damage_from",
-    "no_damage_to",
-  ];
+  const compareType = useCallback(() => {
+    if (type0Data && type1Data) {
+      const weaknessType0: string[] = type0Data?.double_damage_from.map(
+        (type: any) => type.name
+      );
+      const resistancesDoubleType0: string[] = type0Data?.double_damage_to.map(
+        (type: any) => type.name
+      );
+      const resistancesHalfType0: string[] = type0Data?.half_damage_from.map(
+        (type: any) => type.name
+      );
+      const noDamageType0: string[] = type0Data?.no_damage_from.map(
+        (type: any) => type.name
+      );
+      const weaknessType1: string[] = type1Data?.double_damage_from.map(
+        (type: any) => type.name
+      );
+      const resistancesDoubleType1: string[] = type1Data?.double_damage_to.map(
+        (type: any) => type.name
+      );
+      const resistancesHalfType1: string[] = type1Data?.half_damage_from.map(
+        (type: any) => type.name
+      );
+      const noDamageType1: string[] = type1Data?.no_damage_from.map(
+        (type: any) => type.name
+      );
 
-  // console.log(type0Data?.double_damage_from);
-  // console.log(type1Data?.double_damage_to);
-  const compareType = () => {
-    const weakness: string[] = [];
-    for (const property0 of propertiesToCompare) {
-      for (const property1 of propertiesToCompare) {
-        let array0 =
-          type0Data?.[property0].map((type: any) => type.name || []) || [];
-        let array1 =
-          type1Data?.[property1].map((type: any) => type.name || []) || [];
-        if (
-          property0 === "double_damage_from" &&
-          property1 === "double_damage_from"
-        ) {
-          let commonWeaknessesForTypes = array0.filter((item: any) =>
-            array1.includes(item)
-          );
-          // Encontra palavras comuns entre as duas listas
-          // Adiciona as palavras comuns à lista weakness
-          weakness.push(commonWeaknessesForTypes);
-          console.log(weakness);
-        }
-        if (
-          property0 === "double_damage_from" &&
-          (property1 === "double_damage_to" || property1 === "half_damage_from")
-        ) {
-          // se alguma palavra se repetir ele não faz nada,
-          // se não se repetir ele adiciona a palavra do array0
-          // ao array de fraquezas
-          let commonWeaknessesForTypesTo = array0.filter((item: any) =>
-            array1.includes(item)
-          );
-          if (commonWeaknessesForTypesTo.length > 0) {
-            console.log("a palavra se repetiu:", commonWeaknessesForTypesTo);
-            console.log("não faz nada");
-          } else {
-            console.log("a palavra não se repetiu");
-            console.log("Adiciona as palavras do array 0 ao array de weakness");
-            if (
-              array0.filter((item: any) => !weakness.includes(item)).length > 0
-            ) {
-              weakness.push(...array0);
-            }
-          }
-        }
-        // if (
-        //   property0 === "double_damage_from" &&
-        //   property1 === "half_damage_to"
-        // ) {
-        // }
+      const resistancesType0: string[] = [
+        ...new Set(
+          resistancesDoubleType0
+            .concat(resistancesHalfType0)
+            .concat(noDamageType0)
+        ),
+      ];
 
-        // if (
-        //   property0 === "double_damage_from" &&
-        //   property1 === "no_damage_from"
-        // ) {
-        //   let commonWeaknessesForTypesdouble_damage_fromAndno_damage_from =
-        //     array0.filter((item: any) => !array1.includes(item));
-        //   if (
-        //     commonWeaknessesForTypesdouble_damage_fromAndno_damage_from.length >
-        //     0
-        //   ) {
-        //     weakness.push(
-        //       ...commonWeaknessesForTypesdouble_damage_fromAndno_damage_from
-        //     );
-        //   }
-        //   // commonWeaknessesForTypesdouble_damage_fromAndno_damage_from;
-        //   console.log("TESTEEE", weakness);
-        // }
+      const resistancesType1: string[] = [
+        ...new Set(
+          resistancesDoubleType1
+            .concat(resistancesHalfType1)
+            .concat(noDamageType1)
+        ),
+      ];
 
-        // const array0Filtered = array0.filter(
-        //   (typeName: any) => !commmomTypeName.includes(typeName)
-        // );
+      const reallyWeaknessType0: string[] = weaknessType0.filter(
+        (item: any) => !resistancesType1.includes(item)
+      );
 
-        // if (commmomTypeName.length > 0) {
-        //   console.log(
-        //     `O Tipo "${uniquePokemon?.data.types[0].type.name}" toma ${property0} dos tipos: "${commmomTypeName}", mas o "${uniquePokemon?.data.types[1].type.name}" toma ${property1}`
-        //   );
-        // }
-        // console.log(array0Filtered);
+      const reallyWeaknessType1: string[] = weaknessType1.filter(
+        (item: any) => !resistancesType0.includes(item)
+      );
+
+      const commonWeaknesses = reallyWeaknessType0.filter((item: any) =>
+        reallyWeaknessType1.includes(item)
+      );
+
+      setWeaknessOfPokemon(reallyWeaknessType0.concat(reallyWeaknessType1));
+      if (commonWeaknesses.length > 0) {
+        // Remover fraquezas comuns das fraquezas individuais
+        const uniqueWeaknesses = reallyWeaknessType0
+          .concat(reallyWeaknessType1)
+          .filter((item, index, self) => self.indexOf(item) === index);
+
+        // Criar elementos com a notação "4x" apenas para as fraquezas comuns
+        const commonWeaknessElements = commonWeaknesses.map(
+          (commonWeakness) => (
+            <div key={commonWeakness}>
+              {commonWeakness} <span>4x</span>
+            </div>
+          )
+        );
+
+        // Adicionar fraquezas comuns às fraquezas únicas
+        setWeaknessOfPokemon((prevWeaknesses) => [
+          ...prevWeaknesses,
+          ...commonWeaknessElements,
+        ]);
+
+        // Remover as fraquezas comuns das fraquezas únicas
+        setWeaknessOfPokemon((prevWeaknesses) =>
+          prevWeaknesses.filter(
+            (weakness) => !commonWeaknesses.includes(weakness)
+          )
+        );
       }
     }
-    weakness.forEach((element, index) => {
-      if (Array.isArray(element)) {
-        weakness[index] = element.join(", ");
-      }
-    });
-    setWeaknessOfPokemon(weakness);
-  };
+  }, [type0Data, type1Data]);
 
   useEffect(() => {
     if (loading) {
       getTypes();
     }
   }, [getTypes, loading]);
+
+  useEffect(() => {
+    if (type1Data) {
+      compareType();
+    }
+  }, [type1Data, compareType]);
 
   return (
     <S.Content>
@@ -208,30 +203,31 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
         </S.GroupInfos>
         <S.GroupInfos>
           <Titles $font="title_3">Fraquezas</Titles>
-          <button type="button" onClick={() => compareType()}>
-            Compare TYpes
-          </button>
-          {/* {types.map((type: any, index: number) => {
-            return (
-              <S.WeaknessCircle
-                key={index}
-                type={uniquePokemon.data?.types[0].type.name}
-              >
-                {type.data.damage_relations.double_damage_from.map(
-                  (res: any) => {
-                    return res.name;
+          <S.WeaknessesRow>
+            {type1Data ? (
+              <>
+                {weaknessOfPokemon.map((weakness: any, index: number) => {
+                  return (
+                    <S.WeaknessCircle type={weakness} key={index}>
+                      {weakness}
+                    </S.WeaknessCircle>
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                {type0Data?.double_damage_from.map(
+                  (type: any, index: number) => {
+                    return (
+                      <S.WeaknessCircle type={type.name} key={index}>
+                        {type.name}
+                      </S.WeaknessCircle>
+                    );
                   }
                 )}
-              </S.WeaknessCircle>
-            );
-          })} */}
-          {weaknessOfPokemon.map((weakness: any, index: number) => {
-            return (
-              <S.WeaknessCircle type={weakness} key={index}>
-                {weakness}
-              </S.WeaknessCircle>
-            );
-          })}
+              </>
+            )}
+          </S.WeaknessesRow>
         </S.GroupInfos>
         <S.GroupInfos>
           <Titles $font="title_3">Exp Base</Titles>

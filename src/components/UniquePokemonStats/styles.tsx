@@ -66,6 +66,13 @@ export const GroupInfos = styled.div`
   gap: 12px;
 `;
 
+export const WeaknessesRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+`;
+
 export const WeaknessCircle = styled.div<BackgroundPokemonProps>`
   width: 26px;
   height: 26px;
