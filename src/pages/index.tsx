@@ -7,6 +7,7 @@ import axios from "axios";
 import * as S from "@/components/CardPokemon/styles";
 import { usePokeApiRequest } from "@/components/contexts/pokeApiRequestContext";
 import Profile from "./profile/[id]";
+import { ProfileCard } from "@/components/ProfileCard";
 
 interface PokemonLimitProps {
   limit: number;
@@ -21,6 +22,7 @@ export default function Home() {
     useState(false);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const divInfiniteScrollRef = useRef<HTMLDivElement>(null);
+  const [id, setId] = useState(0);
 
   useEffect(() => {
     getPokemons();
@@ -107,6 +109,9 @@ export default function Home() {
 
   const wide = useWindowWide();
 
+  console.log(pokemons.map((pokemon) => pokemon.data?.id));
+  console.log("AQQQ O IDDD", id);
+
   return (
     <>
       <Head>
@@ -132,11 +137,12 @@ export default function Home() {
               {pokemonFiltrado.map((pokemon, index) => {
                 return (
                   <CardPokemon
-                    onClick={() =>
+                    onClick={() => {
                       setOpenPokemonProfileInDesktop(
                         !openPokemonProfileInDesktop
-                      )
-                    }
+                      );
+                      setId(pokemon.data?.id);
+                    }}
                     sizeScren={wide}
                     key={index}
                     pokemon={pokemon}
@@ -150,7 +156,7 @@ export default function Home() {
         </S.Container>
         {openPokemonProfileInDesktop && wide >= 1024 ? (
           <S.WrapperProfileComponent>
-            <Profile />
+            <ProfileCard id={id} />
           </S.WrapperProfileComponent>
         ) : null}
       </S.Wrapper>

@@ -17,7 +17,8 @@ const Wrapper = styled.div`
 export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
   const { loading } = usePokeApiRequest();
   const [types, setTypes] = useState<any>([]);
-  const [weaknessOfPokemon, setWeaknessOfPokemon] = useState<ReactNode[]>([]);
+  const [weaknessOfPokemon, setWeaknessOfPokemon] = useState<any[]>([]);
+  const [weaknessOfPokemon4x, setWeaknessOfPokemon4x] = useState<any[]>([]);
 
   const type0 = uniquePokemon.data?.types[0].type.name;
   let type1 = "";
@@ -58,14 +59,7 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
     no_damage_to: Array<{ name: string }>;
   }
 
-  const getTypeOfDamage = useCallback(
-    (typeData: any, damageTypeName: string) => {
-      return typeData?.[damageTypeName].map((type: any) => type.name);
-    },
-    []
-  );
-
-  const compareType = useCallback(() => {
+  const getPokemonWeakness = useCallback(() => {
     if (type0Data && type1Data) {
       const weaknessType0: string[] = type0Data?.double_damage_from.map(
         (type: any) => type.name
@@ -122,25 +116,9 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
 
       setWeaknessOfPokemon(reallyWeaknessType0.concat(reallyWeaknessType1));
       if (commonWeaknesses.length > 0) {
-        // Remover fraquezas comuns das fraquezas individuais
-        const uniqueWeaknesses = reallyWeaknessType0
-          .concat(reallyWeaknessType1)
-          .filter((item, index, self) => self.indexOf(item) === index);
-
-        // Criar elementos com a notação "4x" apenas para as fraquezas comuns
-        const commonWeaknessElements = commonWeaknesses.map(
-          (commonWeakness) => (
-            <div key={commonWeakness}>
-              {commonWeakness} <span>4x</span>
-            </div>
-          )
-        );
-
         // Adicionar fraquezas comuns às fraquezas únicas
-        setWeaknessOfPokemon((prevWeaknesses) => [
-          ...prevWeaknesses,
-          ...commonWeaknessElements,
-        ]);
+        setWeaknessOfPokemon((prevWeaknesses) => [...prevWeaknesses]);
+        setWeaknessOfPokemon4x(commonWeaknesses);
 
         // Remover as fraquezas comuns das fraquezas únicas
         setWeaknessOfPokemon((prevWeaknesses) =>
@@ -160,9 +138,9 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
 
   useEffect(() => {
     if (type1Data) {
-      compareType();
+      getPokemonWeakness();
     }
-  }, [type1Data, compareType]);
+  }, [type1Data, getPokemonWeakness]);
 
   return (
     <S.Content>
@@ -203,14 +181,30 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
         </S.GroupInfos>
         <S.GroupInfos>
           <Titles $font="title_3">Fraquezas</Titles>
+
           <S.WeaknessesRow>
             {type1Data ? (
               <>
                 {weaknessOfPokemon.map((weakness: any, index: number) => {
                   return (
-                    <S.WeaknessCircle type={weakness} key={index}>
-                      {weakness}
+                    <S.WeaknessCircle
+                      title={weakness}
+                      type={weakness}
+                      key={index}
+                    >
+                      <S.TypeIcon type={weakness} />
                     </S.WeaknessCircle>
+                  );
+                })}
+                {weaknessOfPokemon4x.map((commonWeakness, index: number) => {
+                  return (
+                    <S.Weakness4xCircle type={commonWeakness} key={index}>
+                      <S.TypeIcon
+                        title={commonWeakness}
+                        type={commonWeakness}
+                      />
+                      <S.Icon4x title="4x Damage" />
+                    </S.Weakness4xCircle>
                   );
                 })}
               </>
@@ -219,8 +213,12 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
                 {type0Data?.double_damage_from.map(
                   (type: any, index: number) => {
                     return (
-                      <S.WeaknessCircle type={type.name} key={index}>
-                        {type.name}
+                      <S.WeaknessCircle
+                        title={type.name}
+                        type={type.name}
+                        key={index}
+                      >
+                        <S.TypeIcon type={type.name} />
                       </S.WeaknessCircle>
                     );
                   }

@@ -2,12 +2,34 @@ import * as S from "./styles";
 import { SelectMain } from "../SelectComponent";
 import { SelectIcon, SelectOption } from "../SelectComponent/styles";
 import { useState } from "react";
+import { TypeIcon } from "../UniquePokemonStats/styles";
 
 interface FilterOptionsProps {
   onChangeType?: (type: string) => void;
   onChangeHeight?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onChangeWeight?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
+
+const types = [
+  { typeName: "bug" },
+  { typeName: "dark" },
+  { typeName: "dragon" },
+  { typeName: "electric" },
+  { typeName: "fairy" },
+  { typeName: "fighting" },
+  { typeName: "fire" },
+  { typeName: "flying" },
+  { typeName: "ghost" },
+  { typeName: "grass" },
+  { typeName: "ground" },
+  { typeName: "ice" },
+  { typeName: "normal" },
+  { typeName: "poison" },
+  { typeName: "psychic" },
+  { typeName: "rock" },
+  { typeName: "steel" },
+  { typeName: "water" },
+];
 
 export default function FilterOptions({
   onChangeType = () => {},
@@ -23,24 +45,13 @@ export default function FilterOptions({
           onChange={(e) => onChangeType(e.target.value)}
         >
           <SelectOption value="type">Tipo</SelectOption>
-          <SelectOption value="bug">bug</SelectOption>
-          <SelectOption value="dark">dark</SelectOption>
-          <SelectOption value="dragon">dragon</SelectOption>
-          <SelectOption value="electric">electric</SelectOption>
-          <SelectOption value="fairy">fairy</SelectOption>
-          <SelectOption value="fighting">fighting</SelectOption>
-          <SelectOption value="fire">fire</SelectOption>
-          <SelectOption value="flying">flying</SelectOption>
-          <SelectOption value="ghost">ghost</SelectOption>
-          <SelectOption value="grass">grass</SelectOption>
-          <SelectOption value="ground">ground</SelectOption>
-          <SelectOption value="ice">ice</SelectOption>
-          <SelectOption value="normal">normal</SelectOption>
-          <SelectOption value="poison">poison</SelectOption>
-          <SelectOption value="psychic">psychic</SelectOption>
-          <SelectOption value="rock">rock</SelectOption>
-          <SelectOption value="steel">steel</SelectOption>
-          <SelectOption value="water">water</SelectOption>
+          {types.map((type: any, index) => {
+            return (
+              <SelectOption key={index} value={type.typeName}>
+                {type.typeName}
+              </SelectOption>
+            );
+          })}
         </SelectMain.Select>
       </SelectMain.Root>
       <SelectMain.Root>

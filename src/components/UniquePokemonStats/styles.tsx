@@ -74,12 +74,48 @@ export const WeaknessesRow = styled.div`
 `;
 
 export const WeaknessCircle = styled.div<BackgroundPokemonProps>`
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
 
   border-radius: 50%;
-  background: ${(props) => props?.theme?.colors?.types?.[props?.type]};
+  background-color: ${(props) => props?.theme?.colors?.types?.[props?.type]};
+  padding: 5px;
+`;
+
+export const TypeIcon = styled.div<BackgroundPokemonProps>`
+  width: 20px;
+  height: 100%;
+  background-image: ${(props) => props?.theme?.icons?.types?.[props?.type]};
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+`;
+
+export const Weakness4xCircle = styled.div<BackgroundPokemonProps>`
+  width: 60px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+
+  border-radius: 20px;
+  background-color: ${(props) => props?.theme?.colors?.types?.[props?.type]};
+  padding: 5px;
+  gap: 6px;
+`;
+
+export const Icon4x = styled.div`
+  width: 10px;
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-image: url("/icon/1asterisk_icon.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 `;
