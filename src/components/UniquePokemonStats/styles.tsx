@@ -54,7 +54,7 @@ export const CardAbility = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font: ${theme.fonts.dmSans.paragraph_2};
+  font: ${theme.fonts.dmSans.paragraph_4};
   color: ${theme.colors.black.black_900};
 `;
 

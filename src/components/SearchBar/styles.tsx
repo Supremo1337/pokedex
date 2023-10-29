@@ -12,7 +12,7 @@ export const Container = styled.div`
   gap: 0.6rem;
   align-items: center;
   ::placeholder {
-    font: ${theme.fonts.dmSans.paragraph_2};
+    font: ${theme.fonts.dmSans.paragraph_4};
     color: ${theme.colors.gray.gray_900};
   }
 `;
@@ -24,7 +24,7 @@ export const InputSearch = styled.input`
   outline: none;
   display: flex;
   ::placeholder {
-    font: ${theme.fonts.dmSans.paragraph_2};
+    font: ${theme.fonts.dmSans.paragraph_4};
     color: red;
   }
   /* @media (min-width: 720px) {

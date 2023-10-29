@@ -60,7 +60,7 @@ export const TypeCard = styled.div<BackgroundPokemonProps>`
   justify-content: center;
   text-align: center;
 
-  font: ${theme.fonts.dmSans.paragraph_2};
+  font: ${theme.fonts.dmSans.paragraph_4};
   color: ${theme.colors.black.black_900};
   border-radius: 4px;
   background: ${(props) => props?.theme?.colors?.types?.[props?.type]};

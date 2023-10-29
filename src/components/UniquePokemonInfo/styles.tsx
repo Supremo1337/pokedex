@@ -18,7 +18,7 @@ export const PokemonImage = styled(GS.PokemonImage)`
   top: 20px;
 `;
 export const PokemonNumber = styled(S.PokemonNumber)`
-  font: ${theme.fonts.dmSans.paragraph_4};
+  font: ${theme.fonts.dmSans.paragraph_2};
   color: ${theme.colors.gray.gray_800};
 `;
 

@@ -38,7 +38,7 @@ export const BackgroundPokemon = styled.div<BackgroundPokemonProps>`
 `;
 
 export const PokemonNumber = styled.p`
-  font: ${theme.fonts.dmSans.paragraph_2};
+  font: ${theme.fonts.dmSans.paragraph_4};
   color: ${theme.colors.gray.gray_800};
 `;
 
