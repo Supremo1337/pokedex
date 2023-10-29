@@ -3,10 +3,6 @@ import { BackgroundPokemonProps } from "@/styles/globalStyles";
 import { theme } from "@/styles/themes";
 import styled from "styled-components";
 
-interface PokemonImageProps {
-  $bgImage: string;
-}
-
 export const Content = styled.div`
   width: 156px;
   height: 253px;
@@ -76,13 +72,4 @@ export const WrapperProfileComponent = styled.div`
   height: 862px;
   box-shadow: 0px 4px 4px 0px rgb(0 0 0 / 10%);
   border-radius: 8px;
-`;
-
-export const PokemonImage = styled.div<PokemonImageProps>`
-  width: 85%;
-  height: 85%;
-  background-image: ${(props) => props.$bgImage};
-  background-position: center;
-  background-size: contain;
-  background-repeat: no-repeat;
 `;

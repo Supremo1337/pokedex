@@ -3,9 +3,9 @@ import UniquePokemonStats from "../UniquePokemonStats";
 import React, { useEffect, useState, useCallback } from "react";
 import { usePokeApiRequest } from "../contexts/pokeApiRequestContext";
 import axios from "axios";
-import { IPokemonInfoProps } from "../CardPokemon";
 import EvolutionChain from "../EvolutionChain";
 import { PokemonSpeciesData } from "@/pages/profile/[id]";
+import NextAndPreviousPokemon from "../NextAndPreviousPokemon";
 
 interface ProfileCardProps {
   id: number;
@@ -96,7 +96,7 @@ export function ProfileCard({ id = 0 }: ProfileCardProps) {
             evolutionChain={evolutionChain}
             pokemonEvolution={pokemonEvolution}
           />
-          {console.log(evolutionChain)}
+          {/* <NextAndPreviousPokemon /> */}
         </>
       ) : (
         "Loading..."

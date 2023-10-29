@@ -3,18 +3,13 @@ import * as S from "./styles";
 import axios from "axios";
 import Link from "next/link";
 import * as GS from "@/styles/globalStyles";
+import { IPokemonInfoProps } from "@/interface";
 
 export interface Chain {
   species: {
     name: string;
   };
   evolves_to: Chain[];
-}
-
-export interface IPokemonInfoProps {
-  name: string;
-  data: any;
-  chain?: Chain;
 }
 
 export interface CardPokemonProps {
@@ -33,7 +28,9 @@ export default function CardPokemon({
       <S.Content onClick={onClick}>
         <S.PokemonInfo>
           <S.BackgroundPokemon type={pokemon.data?.types[0].type.name}>
-            <S.PokemonImage
+            <GS.PokemonImage
+              $width="85%"
+              $height="85%"
               $bgImage={
                 pokemon.data?.id < 650
                   ? `url(${pokemon.data?.sprites.other.dream_world.front_default})` ||

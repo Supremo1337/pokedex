@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { IPokemonInfoProps } from "../CardPokemon";
 import * as S from "./styles";
 import * as GS from "@/styles/globalStyles";
+import { IPokemonInfoProps } from "@/interface";
 
 interface ProfileProps {
   uniquePokemon: IPokemonInfoProps;

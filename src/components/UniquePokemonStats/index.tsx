@@ -1,15 +1,12 @@
 import styled from "styled-components";
-import { IPokemonInfoProps } from "../CardPokemon";
 import * as S from "./styles";
 import { TypesGroup } from "../UniquePokemonInfo/styles";
 import { useCallback, useEffect, useState, ReactNode } from "react";
 import { usePokeApiRequest } from "../contexts/pokeApiRequestContext";
 import axios from "axios";
 import * as GS from "@/styles/globalStyles";
+import { ProfileProps } from "@/interface";
 
-interface ProfileProps {
-  uniquePokemon: IPokemonInfoProps;
-}
 const Wrapper = styled.div`
   /* background-color: blue; */
   height: 191px;

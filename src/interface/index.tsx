@@ -1,3 +1,15 @@
+import { Chain } from "@/components/CardPokemon";
+
+export interface IPokemonInfoProps {
+  name: string;
+  data: any;
+  chain?: Chain;
+}
+
+export interface ProfileProps {
+  uniquePokemon: IPokemonInfoProps;
+}
+
 export type TPokemonType =
   | "bug"
   | "dark"

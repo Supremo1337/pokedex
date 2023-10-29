@@ -9,7 +9,7 @@ import UniquePokemonInfo from "@/components/UniquePokemonInfo";
 import axios from "axios";
 import UniquePokemonStats from "@/components/UniquePokemonStats";
 import EvolutionChain from "@/components/EvolutionChain";
-import { IPokemonInfoProps } from "@/components/CardPokemon";
+import NextAndPreviousPokemon from "@/components/NextAndPreviousPokemon";
 
 export interface PokemonSpeciesData {
   flavor_text_entries: Array<{
@@ -89,53 +89,6 @@ export default function Profile() {
       });
   }, [id, setLoading, evolutionChainURLId, SetEvolutionChainURLId]);
 
-  // const getEvoluionChain = useCallback(async () => {
-  //   setLoading(false);
-  //   const response = await axios
-  //     .get<IPokemonInfoProps>(
-  //       `https://pokeapi.co/api/v2/evolution-chain/${evolutionChainURLId}`
-  //     )
-  //     .then((res) => {
-  //       if (res.data && res.data.chain) {
-  //         setEvolutionChain(res);
-  //         let namePokemonsEvolutions: any[] = [];
-  //         const chain = res.data.chain;
-
-  //         if (chain) {
-  //           namePokemonsEvolutions.push(chain.species.name);
-  //           if (chain.evolves_to && chain.evolves_to.length > 0) {
-  //             namePokemonsEvolutions.push(
-  //               chain.evolves_to.map((res) => res.species.name)
-  //             );
-  //           }
-  //           chain.evolves_to.forEach((element) => {
-  //             if (element.evolves_to && element.evolves_to.length > 0) {
-  //               namePokemonsEvolutions.push(
-  //                 element.evolves_to.map((res) => res.species.name)
-  //               );
-  //             }
-  //           });
-  //         }
-  //         console.log(namePokemonsEvolutions);
-
-  //         const urlPokemonEvolutions = namePokemonsEvolutions.map((name) =>
-  //           axios.get(`https://pokeapi.co/api/v2/pokemon/${name}/`)
-  //         );
-
-  //         axios.all(urlPokemonEvolutions).then((res) => {
-  //           const pokemonEvolutionImages = res.map(
-  //             (res) => res.data.sprites.other.dream_world.front_default
-  //           );
-  //           setPokemonEvolution(pokemonEvolutionImages);
-
-  //           setLoading(true);
-  //         });
-  //       } else {
-  //         setLoading(true);
-  //       }
-  //     });
-  // }, [evolutionChainURLId, setLoading, setEvolutionChain, setPokemonEvolution]);
-
   useEffect(() => {
     if (id) {
       getPokemon();
@@ -160,6 +113,7 @@ export default function Profile() {
             evolutionChain={evolutionChain}
             pokemonEvolution={pokemonEvolution}
           />
+          <NextAndPreviousPokemon uniquePokemon={uniquePokemon} />
         </>
       ) : (
         "Loading..."

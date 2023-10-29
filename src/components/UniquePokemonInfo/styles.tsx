@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import * as S from "../CardPokemon/styles";
 import { theme } from "@/styles/themes";
+import * as GS from "@/styles/globalStyles";
 
 export const Content = styled(S.PokemonInfo)`
   position: relative;
@@ -10,7 +11,7 @@ export const BackgroundPokemon = styled(S.BackgroundPokemon)`
   height: 134px;
   position: relative;
 `;
-export const PokemonImage = styled(S.PokemonImage)`
+export const PokemonImage = styled(GS.PokemonImage)`
   position: absolute;
   width: 126%;
   height: 126%;

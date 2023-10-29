@@ -1,9 +1,9 @@
 import * as GS from "@/styles/globalStyles";
-import { IPokemonInfoProps } from "../CardPokemon";
 import * as S from "./styles";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { usePokeApiRequest } from "../contexts/pokeApiRequestContext";
+import { IPokemonInfoProps } from "@/interface";
 
 interface EvolutionChainProps {
   uniquePokemon: IPokemonInfoProps;
@@ -33,7 +33,11 @@ export default function EvolutionChain({
             {pokemonEvolution.map((url: any, index: number) => {
               return (
                 <Fragment key={index}>
-                  <S.EvolutionPokemonImage $bgImage={`url(${url})`} />
+                  <GS.PokemonImage
+                    $width="45px"
+                    $height="59px"
+                    $bgImage={`url(${url})`}
+                  />
                   {index === 0 && evolutionTrigger1 ? (
                     <GS.Description>
                       {

@@ -4,6 +4,12 @@ import styled from "styled-components";
 import { TPokemonType } from "@/interface";
 import * as CPS from "@/components/CardPokemon/styles";
 
+export interface PokemonImageProps {
+  $bgImage: string;
+  $width?: string;
+  $height?: string;
+}
+
 export interface BackgroundPokemonProps {
   type: TPokemonType;
 }
@@ -73,4 +79,16 @@ export const Description = styled.div`
 export const Titles = styled(CPS.PokemonName)<TitlesProps>`
   font: ${({ $font }) => theme.fonts.poppins[$font]};
   color: ${theme.colors.black.black_700};
+`;
+
+export const PokemonImage = styled.div<PokemonImageProps>`
+  width: ${(props) => props.$width};
+  height: ${(props) => props.$height};
+  /* width: 85%;
+  height: 85%; */
+
+  background-image: ${(props) => props.$bgImage};
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
 `;

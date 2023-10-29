@@ -11,9 +11,3 @@ export const EvolutionGroup = styled.div`
   justify-content: center;
   gap: 14px;
 `;
-
-export const EvolutionPokemonImage = styled(CPS.PokemonImage)`
-  width: 45px;
-  height: 59px;
-  /* background: Red; */
-`;
