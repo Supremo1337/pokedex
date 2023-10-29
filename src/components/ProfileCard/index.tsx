@@ -3,34 +3,41 @@ import UniquePokemonStats from "../UniquePokemonStats";
 import React, { useEffect, useState, useCallback } from "react";
 import { usePokeApiRequest } from "../contexts/pokeApiRequestContext";
 import axios from "axios";
-
-interface PokemonSpeciesData {
-  flavor_text_entries: Array<{
-    flavor_text: string;
-    language: {
-      name: string;
-    };
-  }>;
-}
+import { IPokemonInfoProps } from "../CardPokemon";
+import EvolutionChain from "../EvolutionChain";
+import { PokemonSpeciesData } from "@/pages/profile/[id]";
 
 interface ProfileCardProps {
   id: number;
 }
 
 export function ProfileCard({ id = 0 }: ProfileCardProps) {
-  const { loading, setLoading } = usePokeApiRequest();
+  const {
+    loading,
+    pokemons,
+    setLoading,
+    pokemonEvolution,
+    setPokemonEvolution,
+    evolutionChain,
+    setEvolutionChain,
+    getEvoluionChain,
+    evolutionChainURLId,
+    SetEvolutionChainURLId,
+  } = usePokeApiRequest();
   const [uniquePokemon, setUniquePokemon] = useState<any>({});
   const [flavorText, setFlavorText] = useState<any>([]);
+  // const { pokemonEvolution, evolutionChain, setPokemonEvolution } =
+  //   usePokeApiRequest();
 
-  const getPokemon = useCallback(async () => {
-    setLoading(false);
-    const response = await axios
-      .get<PokemonSpeciesData>(`https://pokeapi.co/api/v2/pokemon/${id}/`)
-      .then((res) => {
-        setUniquePokemon(res);
-        setLoading(true);
-      });
-  }, [id, setLoading]);
+  // const getPokemon = useCallback(async () => {
+  //   setLoading(false);
+  //   const response = await axios
+  //     .get<PokemonSpeciesData>(`https://pokeapi.co/api/v2/pokemon/${id}/`)
+  //     .then((res) => {
+  //       setUniquePokemon(res);
+  //       setLoading(true);
+  //     });
+  // }, [id, setLoading]);
 
   const getPokemonsSpecies = useCallback(async () => {
     setLoading(false);
@@ -54,17 +61,26 @@ export function ProfileCard({ id = 0 }: ProfileCardProps) {
               : "";
 
           setFlavorText(flavorText);
+          console.log(typeof evolutionChainURLId);
           setLoading(true);
         }
+        SetEvolutionChainURLId(
+          res.data.evolution_chain.url.replace(
+            "https://pokeapi.co/api/v2/evolution-chain/",
+            ""
+          )
+        );
       });
-  }, [id, setLoading]);
+  }, [id, setLoading, evolutionChainURLId, SetEvolutionChainURLId]);
 
   useEffect(() => {
     if (id) {
-      getPokemon();
+      // getPokemon();
+      setUniquePokemon(pokemons[id - 1]);
       getPokemonsSpecies();
+      getEvoluionChain();
     }
-  }, [id, getPokemon, getPokemonsSpecies]);
+  }, [id, pokemons, getPokemonsSpecies, getEvoluionChain]);
 
   return (
     <>
@@ -75,6 +91,12 @@ export function ProfileCard({ id = 0 }: ProfileCardProps) {
             flavorText={flavorText}
           />
           <UniquePokemonStats uniquePokemon={uniquePokemon} />
+          <EvolutionChain
+            uniquePokemon={uniquePokemon}
+            evolutionChain={evolutionChain}
+            pokemonEvolution={pokemonEvolution}
+          />
+          {console.log(evolutionChain)}
         </>
       ) : (
         "Loading..."

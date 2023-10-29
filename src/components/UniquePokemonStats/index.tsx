@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import { IPokemonInfoProps } from "../CardPokemon";
 import * as S from "./styles";
-import { Description, Titles, TypesGroup } from "../UniquePokemonInfo/styles";
+import { TypesGroup } from "../UniquePokemonInfo/styles";
 import { useCallback, useEffect, useState, ReactNode } from "react";
 import { usePokeApiRequest } from "../contexts/pokeApiRequestContext";
 import axios from "axios";
+import * as GS from "@/styles/globalStyles";
 
 interface ProfileProps {
   uniquePokemon: IPokemonInfoProps;
@@ -47,8 +48,8 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
   const type0Data = types[0]?.data.damage_relations;
   const type1Data = types[1]?.data.damage_relations;
   // console.log(types);
-  console.log(`Tipo ${uniquePokemon?.data?.types[0]?.type.name}`, type0Data);
-  console.log(`Tipo ${uniquePokemon?.data?.types[1]?.type.name}`, type1Data);
+  // console.log(`Tipo ${uniquePokemon?.data?.types[0]?.type.name}`, type0Data);
+  // console.log(`Tipo ${uniquePokemon?.data?.types[1]?.type.name}`, type1Data);
 
   interface DamageRelations {
     double_damage_from: Array<{ name: string }>;
@@ -144,7 +145,7 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
 
   return (
     <S.Content>
-      <Titles $font="title_3">Habilidades</Titles>
+      <GS.Titles $font="title_3">Habilidades</GS.Titles>
       {uniquePokemon.data?.abilities.length !== 3 ? (
         <S.GroupCardAbility>
           {uniquePokemon.data?.abilities.map(
@@ -172,15 +173,15 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
       )}
       <S.GroupStats>
         <S.GroupInfos>
-          <Titles $font="title_3">Altura</Titles>
-          <Description>{uniquePokemon.data?.height / 10} m</Description>
+          <GS.Titles $font="title_3">Altura</GS.Titles>
+          <GS.Description>{uniquePokemon.data?.height / 10} m</GS.Description>
         </S.GroupInfos>
         <S.GroupInfos>
-          <Titles $font="title_3">Peso</Titles>
-          <Description>{uniquePokemon.data?.weight / 10} Kg</Description>
+          <GS.Titles $font="title_3">Peso</GS.Titles>
+          <GS.Description>{uniquePokemon.data?.weight / 10} Kg</GS.Description>
         </S.GroupInfos>
         <S.GroupInfos>
-          <Titles $font="title_3">Fraquezas</Titles>
+          <GS.Titles $font="title_3">Fraquezas</GS.Titles>
 
           <S.WeaknessesRow>
             {type1Data ? (
@@ -228,8 +229,10 @@ export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
           </S.WeaknessesRow>
         </S.GroupInfos>
         <S.GroupInfos>
-          <Titles $font="title_3">Exp Base</Titles>
-          <Description>{uniquePokemon.data?.base_experience} Exp</Description>
+          <GS.Titles $font="title_3">Exp Base</GS.Titles>
+          <GS.Description>
+            {uniquePokemon.data?.base_experience} Exp
+          </GS.Description>
         </S.GroupInfos>
       </S.GroupStats>
     </S.Content>

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { IPokemonInfoProps } from "../CardPokemon";
 import * as S from "./styles";
+import * as GS from "@/styles/globalStyles";
 
 interface ProfileProps {
   uniquePokemon: IPokemonInfoProps;
@@ -32,26 +33,28 @@ export default function UniquePokemonInfo({
           <S.PokemonImage
             $bgImage={
               uniquePokemon?.data?.id < 650
-                ? `url(${uniquePokemon.data?.sprites.other.dream_world.front_default})`
-                : `url(${uniquePokemon.data?.sprites.other["official-artwork"].front_default})`
+                ? `url(${uniquePokemon.data?.sprites.other.dream_world.front_default} )` ||
+                  ""
+                : `url(${uniquePokemon.data?.sprites.other["official-artwork"].front_default} || "")` ||
+                  ""
             }
           />
         </S.BackgroundPokemon>
       </Wrapper>
       <S.PokemonNumber>Nº 0{uniquePokemon.data?.id}</S.PokemonNumber>
-      <S.Titles $font="title_2">{uniquePokemon.data?.name}</S.Titles>
+      <GS.Titles $font="title_2">{uniquePokemon.data?.name}</GS.Titles>
 
       <S.TypesGroup>
         {uniquePokemon.data?.types.map((type: any, index: number) => {
           return (
-            <S.TypeCard key={index} type={type.type.name}>
+            <GS.TypeCard key={index} type={type.type.name}>
               {type.type.name}
-            </S.TypeCard>
+            </GS.TypeCard>
           );
         })}
       </S.TypesGroup>
-      <S.Titles $font="title_3">A pokédex Diz</S.Titles>
-      <S.Description>{removeEscapeCharacters(flavorText)}</S.Description>
+      <GS.Titles $font="title_3">A pokédex Diz</GS.Titles>
+      <GS.Description>{removeEscapeCharacters(flavorText)}</GS.Description>
     </S.Content>
   );
 }

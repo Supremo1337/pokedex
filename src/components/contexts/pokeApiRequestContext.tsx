@@ -9,6 +9,7 @@ import {
   useCallback,
   useEffect,
 } from "react";
+import { IPokemonInfoProps } from "../CardPokemon";
 
 interface PokeApiRequestContextData {
   pokemons: any[];
@@ -16,8 +17,15 @@ interface PokeApiRequestContextData {
   allpokemons: any[];
   setAllPokemons: Dispatch<SetStateAction<any[]>>;
   getPokemons: () => void;
+  getEvoluionChain: () => void;
   loading: boolean;
   setLoading: Dispatch<SetStateAction<boolean>>;
+  evolutionChain: IPokemonInfoProps;
+  setEvolutionChain: Dispatch<any>;
+  evolutionChainURLId: string;
+  SetEvolutionChainURLId: Dispatch<any>;
+  pokemonEvolution: [];
+  setPokemonEvolution: Dispatch<any>;
 }
 
 export interface PokemonsProps {
@@ -36,8 +44,11 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
   const [pokemons, setPokemons] = useState<any[]>([]);
   const [allpokemons, setAllPokemons] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [evolutionChain, setEvolutionChain] = useState<any>([]);
+  const [pokemonEvolution, setPokemonEvolution] = useState<any>([]);
+  const [evolutionChainURLId, SetEvolutionChainURLId] = useState<any>([]);
 
-  var limit = 500;
+  var limit = 33;
 
   const getPokemons = useCallback(() => {
     setLoading(false);
@@ -70,6 +81,54 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
   //   getPokemons();
   // }, [getPokemons]);
 
+  const getEvoluionChain = useCallback(async () => {
+    setLoading(false);
+    const response = await axios
+      .get<IPokemonInfoProps>(
+        `https://pokeapi.co/api/v2/evolution-chain/${evolutionChainURLId}`
+      )
+      .then((res) => {
+        if (res.data && res.data.chain) {
+          setEvolutionChain(res);
+          let namePokemonsEvolutions: any[] = [];
+          const chain = res.data.chain;
+
+          if (chain) {
+            namePokemonsEvolutions.push(chain.species.name);
+            if (chain.evolves_to && chain.evolves_to.length > 0) {
+              namePokemonsEvolutions.push(
+                chain.evolves_to.map((res) => res.species.name)
+              );
+            }
+            chain.evolves_to.forEach((element) => {
+              if (element.evolves_to && element.evolves_to.length > 0) {
+                namePokemonsEvolutions.push(
+                  element.evolves_to.map((res) => res.species.name)
+                );
+              }
+            });
+          }
+          console.log(namePokemonsEvolutions);
+
+          const urlPokemonEvolutions = namePokemonsEvolutions.map((name) =>
+            axios.get(`https://pokeapi.co/api/v2/pokemon/${name}/`)
+          );
+
+          axios.all(urlPokemonEvolutions).then((res) => {
+            const pokemonEvolutionImages = res.map(
+              (res) => res.data.sprites.other.dream_world.front_default
+            );
+            setPokemonEvolution(pokemonEvolutionImages);
+
+            setLoading(true);
+            console.log("aqqqq");
+          });
+        } else {
+          setLoading(true);
+        }
+      });
+  }, [evolutionChainURLId, setLoading, setEvolutionChain, setPokemonEvolution]);
+
   return (
     <PokeApiRequestContext.Provider
       value={{
@@ -80,6 +139,13 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
         getPokemons,
         loading,
         setLoading,
+        evolutionChain,
+        setEvolutionChain,
+        pokemonEvolution,
+        setPokemonEvolution,
+        getEvoluionChain,
+        evolutionChainURLId,
+        SetEvolutionChainURLId,
       }}
     >
       {children}

@@ -1,5 +1,16 @@
 import { createGlobalStyle } from "styled-components";
 import { theme } from "./themes";
+import styled from "styled-components";
+import { TPokemonType } from "@/interface";
+import * as CPS from "@/components/CardPokemon/styles";
+
+export interface BackgroundPokemonProps {
+  type: TPokemonType;
+}
+
+interface TitlesProps {
+  $font: string;
+}
 
 export const Globaltyles = createGlobalStyle`
 * {
@@ -32,4 +43,34 @@ a {
   color: inherit;
   text-decoration: none;
 }
+`;
+
+export const TypeCard = styled.div<BackgroundPokemonProps>`
+  width: 80px;
+  height: 23px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  font: ${theme.fonts.dmSans.paragraph_2};
+  color: ${theme.colors.black.black_900};
+  border-radius: 4px;
+  background: ${(props) => props?.theme?.colors?.types?.[props?.type]};
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
+  text-transform: capitalize;
+`;
+
+export const Description = styled.div`
+  /* width: 327px; */
+  font: ${theme.fonts.dmSans.paragraph_3};
+  color: ${theme.colors.gray.gray_700};
+  text-align: center;
+  text-transform: capitalize;
+`;
+
+export const Titles = styled(CPS.PokemonName)<TitlesProps>`
+  font: ${({ $font }) => theme.fonts.poppins[$font]};
+  color: ${theme.colors.black.black_700};
 `;

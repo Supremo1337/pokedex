@@ -28,7 +28,7 @@ export default function Home() {
     getPokemons();
   }, [getPokemons]);
 
-  console.log(pokemons);
+  // console.log(pokemons);
   const filterPokemonsByType = (type: string) => {
     // setSearch("");
     setSelectedType(type);
@@ -75,7 +75,7 @@ export default function Home() {
   function handelKeyPress() {
     if (search === "") {
       setPokemons(allpokemons);
-      console.log(allpokemons);
+      // console.log(allpokemons);
     } else {
       const filteredPokemons = pokemons.filter(
         (pokemon) =>
@@ -83,7 +83,7 @@ export default function Home() {
           pokemon.data?.id.toString().includes(search)
       );
       setPokemons(filteredPokemons);
-      console.log("Pokemons Pesquisados", filteredPokemons);
+      // console.log("Pokemons Pesquisados", filteredPokemons);
     }
   }
 
@@ -109,8 +109,8 @@ export default function Home() {
 
   const wide = useWindowWide();
 
-  console.log(pokemons.map((pokemon) => pokemon.data?.id));
-  console.log("AQQQ O IDDD", id);
+  // console.log(pokemons.map((pokemon) => pokemon.data?.id));
+  // console.log("AQQQ O IDDD", id);
 
   return (
     <>
@@ -120,7 +120,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {console.log(wide)}
+      {/* {console.log(wide)} */}
       <SearchBar
         onClick={() => handelKeyPress()}
         onKeyDown={(e: KeyboardEvent) => {

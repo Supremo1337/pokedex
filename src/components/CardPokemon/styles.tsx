@@ -1,13 +1,10 @@
 import { TPokemonType } from "@/interface";
+import { BackgroundPokemonProps } from "@/styles/globalStyles";
 import { theme } from "@/styles/themes";
 import styled from "styled-components";
 
 interface PokemonImageProps {
   $bgImage: string;
-}
-
-interface BackgroundPokemonProps {
-  type: TPokemonType;
 }
 
 export const Content = styled.div`
@@ -61,23 +58,6 @@ export const TypesGroup = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-`;
-
-export const TypeCard = styled.div<BackgroundPokemonProps>`
-  width: 80px;
-  height: 23px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-
-  font: ${theme.fonts.dmSans.paragraph_2};
-  color: ${theme.colors.black.black_900};
-  border-radius: 4px;
-  background: ${(props) => props?.theme?.colors?.types?.[props?.type]};
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
-  text-transform: capitalize;
 `;
 
 export const Wrapper = styled.div`

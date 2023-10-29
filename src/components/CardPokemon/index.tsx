@@ -2,11 +2,21 @@ import React, { useEffect, useState } from "react";
 import * as S from "./styles";
 import axios from "axios";
 import Link from "next/link";
+import * as GS from "@/styles/globalStyles";
+
+export interface Chain {
+  species: {
+    name: string;
+  };
+  evolves_to: Chain[];
+}
 
 export interface IPokemonInfoProps {
   name: string;
   data: any;
+  chain?: Chain;
 }
+
 export interface CardPokemonProps {
   pokemon: IPokemonInfoProps;
   onClick: (e: React.MouseEvent<HTMLElement>) => void;
@@ -26,8 +36,10 @@ export default function CardPokemon({
             <S.PokemonImage
               $bgImage={
                 pokemon.data?.id < 650
-                  ? `url(${pokemon.data?.sprites.other.dream_world.front_default})`
-                  : `url(${pokemon?.data?.sprites?.other["official-artwork"]?.front_default})`
+                  ? `url(${pokemon.data?.sprites.other.dream_world.front_default})` ||
+                    ""
+                  : `url(${pokemon?.data?.sprites?.other["official-artwork"]?.front_default})` ||
+                    ""
               }
             />
           </S.BackgroundPokemon>
@@ -37,9 +49,9 @@ export default function CardPokemon({
         <S.TypesGroup>
           {pokemon.data?.types.map((type: any, index: number) => {
             return (
-              <S.TypeCard key={index} type={type.type.name}>
+              <GS.TypeCard key={index} type={type.type.name}>
                 {type.type.name}
-              </S.TypeCard>
+              </GS.TypeCard>
             );
           })}
         </S.TypesGroup>
