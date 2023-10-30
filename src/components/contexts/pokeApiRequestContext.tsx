@@ -23,9 +23,14 @@ interface PokeApiRequestContextData {
   evolutionChain: IPokemonInfoProps;
   setEvolutionChain: Dispatch<any>;
   evolutionChainURLId: string;
-  SetEvolutionChainURLId: Dispatch<any>;
+  setEvolutionChainURLId: Dispatch<any>;
   pokemonEvolution: [];
   setPokemonEvolution: Dispatch<any>;
+  uniquePokemon: IPokemonInfoProps;
+  setUniquePokemon: Dispatch<any>;
+  previusAndNextPokemon: IPokemonInfoProps[];
+  setPreviusAndNextPokemon: Dispatch<any>;
+  getNextAndPreviusPokemon: () => void;
 }
 
 export interface PokemonsProps {
@@ -46,7 +51,9 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
   const [loading, setLoading] = useState(false);
   const [evolutionChain, setEvolutionChain] = useState<any>([]);
   const [pokemonEvolution, setPokemonEvolution] = useState<any>([]);
-  const [evolutionChainURLId, SetEvolutionChainURLId] = useState<any>([]);
+  const [evolutionChainURLId, setEvolutionChainURLId] = useState<any>([]);
+  const [uniquePokemon, setUniquePokemon] = useState<any>([]);
+  const [previusAndNextPokemon, setPreviusAndNextPokemon] = useState<any>([]);
 
   var limit = 33;
 
@@ -145,6 +152,34 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
       });
   }, [evolutionChainURLId, setLoading, setEvolutionChain, setPokemonEvolution]);
 
+  const getNextAndPreviusPokemon = useCallback(async () => {
+    setLoading(false);
+    var endpoints = [];
+    if (uniquePokemon.data?.id) {
+      if (uniquePokemon.data?.id !== 1) {
+        await endpoints.push(
+          `https://pokeapi.co/api/v2/pokemon/${uniquePokemon.data?.id - 1}/`,
+          `https://pokeapi.co/api/v2/pokemon/${uniquePokemon.data?.id + 1}/`
+        );
+      } else {
+        await endpoints.push(
+          `https://pokeapi.co/api/v2/pokemon/${uniquePokemon.data?.id + 1}/`
+        );
+      }
+
+      var response = axios
+        .all(
+          endpoints.map(
+            async (endpoint) => await axios.get<PokemonsProps>(endpoint)
+          )
+        )
+        .then((res) => {
+          setPreviusAndNextPokemon(res);
+          setLoading(true);
+        });
+    }
+  }, [setLoading, uniquePokemon.data?.id]);
+
   return (
     <PokeApiRequestContext.Provider
       value={{
@@ -161,7 +196,12 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
         setPokemonEvolution,
         getEvoluionChain,
         evolutionChainURLId,
-        SetEvolutionChainURLId,
+        setEvolutionChainURLId,
+        uniquePokemon,
+        setUniquePokemon,
+        previusAndNextPokemon,
+        setPreviusAndNextPokemon,
+        getNextAndPreviusPokemon,
       }}
     >
       {children}

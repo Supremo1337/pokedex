@@ -7,13 +7,11 @@ import Link from "next/link";
 
 interface NextAndPreviousPokemonProps {
   uniquePokemon: IPokemonInfoProps;
-  previusAndNextPokemon: IPokemonInfoProps[];
+  // previusAndNextPokemon: IPokemonInfoProps[];
 }
 
-export default function NextAndPreviousPokemon({
-  uniquePokemon,
-  previusAndNextPokemon,
-}: NextAndPreviousPokemonProps) {
+export default function NextAndPreviousPokemon() {
+  const { previusAndNextPokemon, uniquePokemon } = usePokeApiRequest();
   const previusPokemonIsNextOnlyIfIdIs1 = previusAndNextPokemon?.[0]?.data;
   const nextPokemon = previusAndNextPokemon?.[1]?.data;
   // console.log("NEXT AQ PORRA NO COMPONENT", previusPokemonIsNextOnlyIfIdIs1);
@@ -42,7 +40,6 @@ export default function NextAndPreviousPokemon({
               </GS.PokemonNumber>
             </S.ButtonDiv>
           </Link>
-
           <S.Divider />
         </>
       ) : null}

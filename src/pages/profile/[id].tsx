@@ -30,21 +30,13 @@ export default function Profile() {
     loading,
     setLoading,
     pokemonEvolution,
-    setPokemonEvolution,
     evolutionChain,
-    setEvolutionChain,
     getEvoluionChain,
-    evolutionChainURLId,
-    SetEvolutionChainURLId,
+    setEvolutionChainURLId,
+    setUniquePokemon,
+    getNextAndPreviusPokemon,
   } = usePokeApiRequest();
-  const [uniquePokemon, setUniquePokemon] = useState<any>([]);
-  const [previusAndNextPokemon, setPreviusAndNextPokemon] = useState<any>([]);
-  // const [pokemonEvolution, setPokemonEvolution] = useState<any>([]);
   const [flavorText, setFlavorText] = useState<any>([]);
-  // const [evolutionChain, SetEvolutionChain] = useState<any>([]);
-  // const [evolutionChainURLId, SetEvolutionChainURLId] = useState<any>([]);
-
-  // console.log("iddd aq", id);
 
   const getPokemon = useCallback(async () => {
     setLoading(false);
@@ -54,35 +46,7 @@ export default function Profile() {
         setUniquePokemon(res);
         setLoading(true);
       });
-  }, [id, setLoading]);
-
-  const getPokemonNext = useCallback(async () => {
-    setLoading(false);
-    var endpoints = [];
-    if (uniquePokemon.data?.id && id) {
-      if (uniquePokemon.data?.id !== 1) {
-        await endpoints.push(
-          `https://pokeapi.co/api/v2/pokemon/${uniquePokemon.data?.id - 1}/`,
-          `https://pokeapi.co/api/v2/pokemon/${uniquePokemon.data?.id + 1}/`
-        );
-      } else {
-        await endpoints.push(
-          `https://pokeapi.co/api/v2/pokemon/${uniquePokemon.data?.id + 1}/`
-        );
-      }
-
-      var response = axios
-        .all(
-          endpoints.map(
-            async (endpoint) => await axios.get<PokemonsProps>(endpoint)
-          )
-        )
-        .then((res) => {
-          setPreviusAndNextPokemon(res);
-          setLoading(true);
-        });
-    }
-  }, [setLoading, id, uniquePokemon.data?.id]);
+  }, [id, setLoading, setUniquePokemon]);
 
   const getPokemonsSpecies = useCallback(async () => {
     setLoading(false);
@@ -106,47 +70,45 @@ export default function Profile() {
               : "";
 
           setFlavorText(flavorText);
-          console.log(typeof evolutionChainURLId);
           setLoading(true);
         }
-        SetEvolutionChainURLId(
+        setEvolutionChainURLId(
           res.data.evolution_chain.url.replace(
             "https://pokeapi.co/api/v2/evolution-chain/",
             ""
           )
         );
       });
-  }, [id, setLoading, evolutionChainURLId, SetEvolutionChainURLId]);
+  }, [id, setLoading, setEvolutionChainURLId]);
 
   useEffect(() => {
     if (id) {
       getPokemon();
       getPokemonsSpecies();
       getEvoluionChain();
-      getPokemonNext();
+      getNextAndPreviusPokemon();
     }
-  }, [id, getPokemon, getPokemonsSpecies, getEvoluionChain, getPokemonNext]);
+  }, [
+    id,
+    getPokemon,
+    getPokemonsSpecies,
+    getEvoluionChain,
+    getNextAndPreviusPokemon,
+  ]);
 
-  console.log("NEXTT", previusAndNextPokemon);
+  // console.log("NEXTT", previusAndNextPokemon);
 
   return (
     <>
       {loading ? (
         <>
-          <UniquePokemonInfo
-            uniquePokemon={uniquePokemon}
-            flavorText={flavorText}
-          />
-          <UniquePokemonStats uniquePokemon={uniquePokemon} />
+          <UniquePokemonInfo flavorText={flavorText} />
+          <UniquePokemonStats />
           <EvolutionChain
-            uniquePokemon={uniquePokemon}
             evolutionChain={evolutionChain}
             pokemonEvolution={pokemonEvolution}
           />
-          <NextAndPreviousPokemon
-            uniquePokemon={uniquePokemon}
-            previusAndNextPokemon={previusAndNextPokemon}
-          />
+          <NextAndPreviousPokemon />
         </>
       ) : (
         "Loading..."

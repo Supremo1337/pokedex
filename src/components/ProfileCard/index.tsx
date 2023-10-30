@@ -1,7 +1,10 @@
 import UniquePokemonInfo from "../UniquePokemonInfo";
 import UniquePokemonStats from "../UniquePokemonStats";
 import React, { useEffect, useState, useCallback } from "react";
-import { usePokeApiRequest } from "../contexts/pokeApiRequestContext";
+import {
+  PokemonsProps,
+  usePokeApiRequest,
+} from "../contexts/pokeApiRequestContext";
 import axios from "axios";
 import EvolutionChain from "../EvolutionChain";
 import { PokemonSpeciesData } from "@/pages/profile/[id]";
@@ -17,27 +20,14 @@ export function ProfileCard({ id = 0 }: ProfileCardProps) {
     pokemons,
     setLoading,
     pokemonEvolution,
-    setPokemonEvolution,
     evolutionChain,
-    setEvolutionChain,
     getEvoluionChain,
-    evolutionChainURLId,
-    SetEvolutionChainURLId,
+    setEvolutionChainURLId,
+    uniquePokemon,
+    setUniquePokemon,
+    getNextAndPreviusPokemon,
   } = usePokeApiRequest();
-  const [uniquePokemon, setUniquePokemon] = useState<any>([]);
   const [flavorText, setFlavorText] = useState<any>([]);
-  // const { pokemonEvolution, evolutionChain, setPokemonEvolution } =
-  //   usePokeApiRequest();
-
-  // const getPokemon = useCallback(async () => {
-  //   setLoading(false);
-  //   const response = await axios
-  //     .get<PokemonSpeciesData>(`https://pokeapi.co/api/v2/pokemon/${id}/`)
-  //     .then((res) => {
-  //       setUniquePokemon(res);
-  //       setLoading(true);
-  //     });
-  // }, [id, setLoading]);
 
   const getPokemonsSpecies = useCallback(async () => {
     setLoading(false);
@@ -63,39 +53,42 @@ export function ProfileCard({ id = 0 }: ProfileCardProps) {
           setFlavorText(flavorText);
           setLoading(true);
         }
-        SetEvolutionChainURLId(
+        setEvolutionChainURLId(
           res.data.evolution_chain.url.replace(
             "https://pokeapi.co/api/v2/evolution-chain/",
             ""
           )
         );
       });
-  }, [id, setLoading, SetEvolutionChainURLId]);
+  }, [id, setLoading, setEvolutionChainURLId]);
 
   useEffect(() => {
     if (id) {
-      // getPokemon();
       setUniquePokemon(pokemons[id - 1]);
       getPokemonsSpecies();
       getEvoluionChain();
+      getNextAndPreviusPokemon();
     }
-  }, [id, pokemons, getPokemonsSpecies, getEvoluionChain]);
+  }, [
+    id,
+    pokemons,
+    getPokemonsSpecies,
+    getEvoluionChain,
+    getNextAndPreviusPokemon,
+    setUniquePokemon,
+  ]);
 
   return (
     <>
       {loading ? (
         <>
-          <UniquePokemonInfo
-            uniquePokemon={uniquePokemon}
-            flavorText={flavorText}
-          />
-          <UniquePokemonStats uniquePokemon={uniquePokemon} />
+          <UniquePokemonInfo flavorText={flavorText} />
+          <UniquePokemonStats />
           <EvolutionChain
-            uniquePokemon={uniquePokemon}
             evolutionChain={evolutionChain}
             pokemonEvolution={pokemonEvolution}
           />
-          {/* <NextAndPreviousPokemon /> */}
+          <NextAndPreviousPokemon />
         </>
       ) : (
         "Loading..."

@@ -12,8 +12,8 @@ const Wrapper = styled.div`
   height: 191px;
 `;
 
-export default function UniquePokemonStats({ uniquePokemon }: ProfileProps) {
-  const { loading } = usePokeApiRequest();
+export default function UniquePokemonStats() {
+  const { loading, uniquePokemon } = usePokeApiRequest();
   const [types, setTypes] = useState<any>([]);
   const [weaknessOfPokemon, setWeaknessOfPokemon] = useState<any[]>([]);
   const [weaknessOfPokemon4x, setWeaknessOfPokemon4x] = useState<any[]>([]);

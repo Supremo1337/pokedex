@@ -2,9 +2,9 @@ import styled from "styled-components";
 import * as S from "./styles";
 import * as GS from "@/styles/globalStyles";
 import { IPokemonInfoProps } from "@/interface";
+import { usePokeApiRequest } from "../contexts/pokeApiRequestContext";
 
 interface ProfileProps {
-  uniquePokemon: IPokemonInfoProps;
   flavorText: string;
 }
 const Wrapper = styled.div`
@@ -12,10 +12,8 @@ const Wrapper = styled.div`
   height: 191px;
 `;
 
-export default function UniquePokemonInfo({
-  uniquePokemon,
-  flavorText = "",
-}: ProfileProps) {
+export default function UniquePokemonInfo({ flavorText = "" }: ProfileProps) {
+  const { uniquePokemon } = usePokeApiRequest();
   const removeEscapeCharacters = (text: string) => {
     return text
       .toString()

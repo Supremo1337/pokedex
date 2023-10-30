@@ -6,13 +6,11 @@ import { usePokeApiRequest } from "../contexts/pokeApiRequestContext";
 import { IPokemonInfoProps } from "@/interface";
 
 interface EvolutionChainProps {
-  uniquePokemon: IPokemonInfoProps;
   evolutionChain: IPokemonInfoProps;
   pokemonEvolution: [];
 }
 
 export default function EvolutionChain({
-  uniquePokemon,
   evolutionChain,
   pokemonEvolution,
 }: EvolutionChainProps) {
