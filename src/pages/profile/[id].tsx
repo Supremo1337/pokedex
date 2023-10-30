@@ -37,7 +37,8 @@ export default function Profile() {
     evolutionChainURLId,
     SetEvolutionChainURLId,
   } = usePokeApiRequest();
-  const [uniquePokemon, setUniquePokemon] = useState<any>({});
+  const [uniquePokemon, setUniquePokemon] = useState<any>([]);
+  const [previusAndNextPokemon, setPreviusAndNextPokemon] = useState<any>([]);
   // const [pokemonEvolution, setPokemonEvolution] = useState<any>([]);
   const [flavorText, setFlavorText] = useState<any>([]);
   // const [evolutionChain, SetEvolutionChain] = useState<any>([]);
@@ -54,6 +55,34 @@ export default function Profile() {
         setLoading(true);
       });
   }, [id, setLoading]);
+
+  const getPokemonNext = useCallback(async () => {
+    setLoading(false);
+    var endpoints = [];
+    if (uniquePokemon.data?.id && id) {
+      if (uniquePokemon.data?.id !== 1) {
+        await endpoints.push(
+          `https://pokeapi.co/api/v2/pokemon/${uniquePokemon.data?.id - 1}/`,
+          `https://pokeapi.co/api/v2/pokemon/${uniquePokemon.data?.id + 1}/`
+        );
+      } else {
+        await endpoints.push(
+          `https://pokeapi.co/api/v2/pokemon/${uniquePokemon.data?.id + 1}/`
+        );
+      }
+
+      var response = axios
+        .all(
+          endpoints.map(
+            async (endpoint) => await axios.get<PokemonsProps>(endpoint)
+          )
+        )
+        .then((res) => {
+          setPreviusAndNextPokemon(res);
+          setLoading(true);
+        });
+    }
+  }, [setLoading, id, uniquePokemon.data?.id]);
 
   const getPokemonsSpecies = useCallback(async () => {
     setLoading(false);
@@ -94,10 +123,11 @@ export default function Profile() {
       getPokemon();
       getPokemonsSpecies();
       getEvoluionChain();
+      getPokemonNext();
     }
-  }, [id, getPokemon, getPokemonsSpecies, getEvoluionChain]);
+  }, [id, getPokemon, getPokemonsSpecies, getEvoluionChain, getPokemonNext]);
 
-  console.log(evolutionChainURLId);
+  console.log("NEXTT", previusAndNextPokemon);
 
   return (
     <>
@@ -113,7 +143,10 @@ export default function Profile() {
             evolutionChain={evolutionChain}
             pokemonEvolution={pokemonEvolution}
           />
-          <NextAndPreviousPokemon uniquePokemon={uniquePokemon} />
+          <NextAndPreviousPokemon
+            uniquePokemon={uniquePokemon}
+            previusAndNextPokemon={previusAndNextPokemon}
+          />
         </>
       ) : (
         "Loading..."

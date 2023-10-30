@@ -19,11 +19,6 @@ export default function EvolutionChain({
   const evolutionTrigger1 = evolutionChain.data?.chain?.evolves_to[0];
   const evolutionTrigger2 =
     evolutionChain.data?.chain.evolves_to[0]?.evolves_to[0];
-
-  // console.log(
-  //   "AQQQ",
-  //   evolutionChain.data?.chain.evolves_to[0].evolution_details[0].trigger.name
-  // );
   return (
     <S.Content>
       <GS.Titles $font="title_3">Evoluções</GS.Titles>

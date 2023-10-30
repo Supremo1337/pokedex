@@ -1,3 +1,4 @@
+import { IPokemonInfoProps } from "@/interface";
 import axios from "axios";
 import {
   Dispatch,
@@ -9,7 +10,6 @@ import {
   useCallback,
   useEffect,
 } from "react";
-import { IPokemonInfoProps } from "../CardPokemon";
 
 interface PokeApiRequestContextData {
   pokemons: any[];
@@ -95,34 +95,50 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
 
           if (chain) {
             namePokemonsEvolutions.push(chain.species.name);
+
             if (chain.evolves_to && chain.evolves_to.length > 0) {
               namePokemonsEvolutions.push(
                 chain.evolves_to.map((res) => res.species.name)
               );
             }
-            chain.evolves_to.forEach((element) => {
-              if (element.evolves_to && element.evolves_to.length > 0) {
-                namePokemonsEvolutions.push(
-                  element.evolves_to.map((res) => res.species.name)
-                );
-              }
-            });
           }
-          console.log(namePokemonsEvolutions);
 
-          const urlPokemonEvolutions = namePokemonsEvolutions.map((name) =>
-            axios.get(`https://pokeapi.co/api/v2/pokemon/${name}/`)
-          );
-
-          axios.all(urlPokemonEvolutions).then((res) => {
-            const pokemonEvolutionImages = res.map(
-              (res) => res.data.sprites.other.dream_world.front_default
+          if (namePokemonsEvolutions[1]?.length > 1) {
+            const urlPokemonEvolutionsRest = [
+              namePokemonsEvolutions[0],
+              ...namePokemonsEvolutions[1],
+            ].map((name: string) =>
+              axios.get(`https://pokeapi.co/api/v2/pokemon/${name}/`)
             );
-            setPokemonEvolution(pokemonEvolutionImages);
 
-            setLoading(true);
-            console.log("aqqqq");
-          });
+            axios.all(urlPokemonEvolutionsRest).then((res) => {
+              const pokemonEvolutionImages = res.map(
+                (res: any) => res.data.sprites.other.dream_world.front_default
+              );
+              setPokemonEvolution(pokemonEvolutionImages);
+
+              setLoading(true);
+              // console.log("aqqqq");
+            });
+            // console.log(namePokemonsEvolutions[0]);
+
+            ("fluxo do slowpoke");
+          } else {
+            const urlPokemonEvolutions = namePokemonsEvolutions.map((name) =>
+              axios.get(`https://pokeapi.co/api/v2/pokemon/${name}/`)
+            );
+
+            axios.all(urlPokemonEvolutions).then((res) => {
+              const pokemonEvolutionImages = res.map(
+                (res) => res.data.sprites.other.dream_world.front_default
+              );
+              setPokemonEvolution(pokemonEvolutionImages);
+
+              setLoading(true);
+              // console.log("aqqqq");
+            });
+            ("fluxonormal");
+          }
         } else {
           setLoading(true);
         }

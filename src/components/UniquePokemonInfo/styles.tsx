@@ -17,10 +17,6 @@ export const PokemonImage = styled(GS.PokemonImage)`
   height: 126%;
   top: 20px;
 `;
-export const PokemonNumber = styled(S.PokemonNumber)`
-  font: ${theme.fonts.dmSans.paragraph_2};
-  color: ${theme.colors.gray.gray_800};
-`;
 
 export const TypesGroup = styled(S.TypesGroup)`
   flex-direction: row;

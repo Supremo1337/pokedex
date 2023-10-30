@@ -24,7 +24,7 @@ export function ProfileCard({ id = 0 }: ProfileCardProps) {
     evolutionChainURLId,
     SetEvolutionChainURLId,
   } = usePokeApiRequest();
-  const [uniquePokemon, setUniquePokemon] = useState<any>({});
+  const [uniquePokemon, setUniquePokemon] = useState<any>([]);
   const [flavorText, setFlavorText] = useState<any>([]);
   // const { pokemonEvolution, evolutionChain, setPokemonEvolution } =
   //   usePokeApiRequest();
@@ -61,7 +61,6 @@ export function ProfileCard({ id = 0 }: ProfileCardProps) {
               : "";
 
           setFlavorText(flavorText);
-          console.log(typeof evolutionChainURLId);
           setLoading(true);
         }
         SetEvolutionChainURLId(
@@ -71,7 +70,7 @@ export function ProfileCard({ id = 0 }: ProfileCardProps) {
           )
         );
       });
-  }, [id, setLoading, evolutionChainURLId, SetEvolutionChainURLId]);
+  }, [id, setLoading, SetEvolutionChainURLId]);
 
   useEffect(() => {
     if (id) {

@@ -41,7 +41,9 @@ export default function UniquePokemonInfo({
           />
         </S.BackgroundPokemon>
       </Wrapper>
-      <S.PokemonNumber>Nº 0{uniquePokemon.data?.id}</S.PokemonNumber>
+      <GS.PokemonNumber $font="paragraph_2">
+        Nº 0{uniquePokemon.data?.id}
+      </GS.PokemonNumber>
       <GS.Titles $font="title_2">{uniquePokemon.data?.name}</GS.Titles>
 
       <S.TypesGroup>

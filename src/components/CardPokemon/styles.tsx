@@ -37,17 +37,6 @@ export const BackgroundPokemon = styled.div<BackgroundPokemonProps>`
   justify-content: center;
 `;
 
-export const PokemonNumber = styled.p`
-  font: ${theme.fonts.dmSans.paragraph_4};
-  color: ${theme.colors.gray.gray_800};
-`;
-
-export const PokemonName = styled.p`
-  text-transform: capitalize;
-  font: ${theme.fonts.poppins.title_4};
-  color: ${theme.colors.black.black_700};
-`;
-
 export const TypesGroup = styled.div`
   height: 56px;
 

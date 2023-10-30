@@ -14,7 +14,7 @@ export interface BackgroundPokemonProps {
   type: TPokemonType;
 }
 
-interface TitlesProps {
+interface TextsProps {
   $font: string;
 }
 
@@ -36,6 +36,7 @@ body {
   overflow-x: hidden;
   padding: 24px 12px;
   font-size: 62.5%;
+ 
 
   @media (min-width: 1024px) {
     padding: 30px 80px;
@@ -43,6 +44,12 @@ body {
   @media (min-width: 1366px) {
     padding: 30px 128px;
   }
+}
+
+#__next{
+  display: flex;
+  flex-direction: column;
+  justify-content:center;
 }
 
 a {
@@ -76,9 +83,21 @@ export const Description = styled.div`
   text-transform: capitalize;
 `;
 
-export const Titles = styled(CPS.PokemonName)<TitlesProps>`
+export const PokemonName = styled.p<TextsProps>`
+  text-transform: capitalize;
+  /* font: ${theme.fonts.poppins.title_4}; */
   font: ${({ $font }) => theme.fonts.poppins[$font]};
   color: ${theme.colors.black.black_700};
+`;
+
+export const Titles = styled(PokemonName)`
+  font: ${({ $font }) => theme.fonts.poppins[$font]};
+  color: ${theme.colors.black.black_700};
+`;
+
+export const PokemonNumber = styled.p<TextsProps>`
+  font: ${({ $font }) => theme.fonts.dmSans[$font]};
+  color: ${theme.colors.gray.gray_800};
 `;
 
 export const PokemonImage = styled.div<PokemonImageProps>`

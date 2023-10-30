@@ -40,8 +40,10 @@ export default function CardPokemon({
               }
             />
           </S.BackgroundPokemon>
-          <S.PokemonNumber>Nº 0{pokemon.data?.id}</S.PokemonNumber>
-          <S.PokemonName>{pokemon.data?.name}</S.PokemonName>
+          <GS.PokemonNumber $font="paragraph_4">
+            Nº 0{pokemon.data?.id}
+          </GS.PokemonNumber>
+          <GS.PokemonName $font="title_4">{pokemon.data?.name}</GS.PokemonName>
         </S.PokemonInfo>
         <S.TypesGroup>
           {pokemon.data?.types.map((type: any, index: number) => {
