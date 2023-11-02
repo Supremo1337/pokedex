@@ -17,6 +17,8 @@ export default function EvolutionChain({
   const evolutionTrigger1 = evolutionChain.data?.chain?.evolves_to[0];
   const evolutionTrigger2 =
     evolutionChain.data?.chain.evolves_to[0]?.evolves_to[0];
+
+  // console.log(pokemonEvolution);
   return (
     <S.Content>
       <GS.Titles $font="title_3">Evoluções</GS.Titles>
@@ -35,7 +37,7 @@ export default function EvolutionChain({
                     <GS.Description>
                       {
                         evolutionChain.data?.chain?.evolves_to[0]
-                          .evolution_details[0].trigger.name
+                          .evolution_details[0]?.trigger.name
                       }
                     </GS.Description>
                   ) : null}

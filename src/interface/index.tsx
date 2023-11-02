@@ -2,7 +2,9 @@ import { Chain } from "@/components/CardPokemon";
 
 export interface IPokemonInfoProps {
   name: string;
-  data: any;
+  id: number;
+  sprites: any;
+  types: any;
   chain?: Chain;
 }
 

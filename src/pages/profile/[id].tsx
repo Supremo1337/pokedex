@@ -9,7 +9,7 @@ import UniquePokemonInfo from "@/components/UniquePokemonInfo";
 import axios from "axios";
 import UniquePokemonStats from "@/components/UniquePokemonStats";
 import EvolutionChain from "@/components/EvolutionChain";
-import NextAndPreviousPokemon from "@/components/NextAndPreviousPokemon";
+import NextAndPreviousPokemon from "@/components/NextAndPreviousPokemonDesktop";
 
 export interface PokemonSpeciesData {
   flavor_text_entries: Array<{
@@ -39,17 +39,16 @@ export default function Profile() {
   const [flavorText, setFlavorText] = useState<any>([]);
 
   const getPokemon = useCallback(async () => {
-    setLoading(false);
+    // setLoading(false);
     const response = await axios
       .get<PokemonSpeciesData>(`https://pokeapi.co/api/v2/pokemon/${id}/`)
       .then((res) => {
         setUniquePokemon(res);
-        setLoading(true);
+        // setLoading(true);
       });
-  }, [id, setLoading, setUniquePokemon]);
+  }, [id, setUniquePokemon]);
 
   const getPokemonsSpecies = useCallback(async () => {
-    setLoading(false);
     const response = await axios
       .get<PokemonSpeciesData>(
         `https://pokeapi.co/api/v2/pokemon-species/${id}/`
@@ -70,7 +69,7 @@ export default function Profile() {
               : "";
 
           setFlavorText(flavorText);
-          setLoading(true);
+          // setLoading(true);
         }
         setEvolutionChainURLId(
           res.data.evolution_chain.url.replace(
@@ -79,22 +78,45 @@ export default function Profile() {
           )
         );
       });
-  }, [id, setLoading, setEvolutionChainURLId]);
+  }, [id, setEvolutionChainURLId]);
 
-  useEffect(() => {
-    if (id) {
-      getPokemon();
-      getPokemonsSpecies();
-      getEvoluionChain();
-      getNextAndPreviusPokemon();
+  const getPokemonData = useCallback(async () => {
+    // Inicie o estado de carregamento como falso
+    setLoading(false);
+
+    try {
+      // Realize todas as requisições necessárias
+      await getPokemon();
+      await getPokemonsSpecies();
+      await getEvoluionChain();
+      await getNextAndPreviusPokemon();
+
+      // Atualize o estado de carregamento como verdadeiro quando todas as requisições forem concluídas
+      setLoading(true);
+    } catch (error) {
+      // Lide com erros, se necessário
+      console.error("Erro ao buscar dados:", error);
+      setLoading(true); // Certifique-se de definir setLoading como verdadeiro em caso de erro
     }
   }, [
-    id,
     getPokemon,
     getPokemonsSpecies,
     getEvoluionChain,
     getNextAndPreviusPokemon,
+    setLoading,
   ]);
+
+  useEffect(() => {
+    if (id) {
+      getPokemonData();
+    }
+  }, [id, getPokemonData]);
+
+  useEffect(() => {
+    if (id) {
+      getPokemonData();
+    }
+  }, [id, getPokemonData]);
 
   // console.log("NEXTT", previusAndNextPokemon);
 

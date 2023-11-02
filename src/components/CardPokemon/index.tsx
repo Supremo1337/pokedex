@@ -15,38 +15,38 @@ export interface Chain {
 export interface CardPokemonProps {
   pokemon: IPokemonInfoProps;
   onClick: (e: React.MouseEvent<HTMLElement>) => void;
-  sizeScren: number;
+  sizeScreen: number;
 }
 
 export default function CardPokemon({
   pokemon,
   onClick = () => {},
-  sizeScren = 0,
+  sizeScreen = 0,
 }: CardPokemonProps) {
   return (
-    <Link href={sizeScren < 1024 ? `/profile/${pokemon.data?.id}` : ""}>
+    <Link href={sizeScreen < 1024 ? `/profile/${pokemon.id}` : ""}>
       <S.Content onClick={onClick}>
         <S.PokemonInfo>
-          <S.BackgroundPokemon type={pokemon.data?.types[0].type.name}>
+          <S.BackgroundPokemon type={pokemon.types[0].type.name}>
             <GS.PokemonImage
               $width="85%"
               $height="85%"
               $bgImage={
-                pokemon.data?.id < 650
-                  ? `url(${pokemon.data?.sprites.other.dream_world.front_default})` ||
+                pokemon.id < 650
+                  ? `url(${pokemon.sprites.other.dream_world.front_default})` ||
                     ""
-                  : `url(${pokemon?.data?.sprites?.other["official-artwork"]?.front_default})` ||
+                  : `url(${pokemon.sprites?.other["official-artwork"]?.front_default})` ||
                     ""
               }
             />
           </S.BackgroundPokemon>
           <GS.PokemonNumber $font="paragraph_4">
-            Nº 0{pokemon.data?.id}
+            Nº 0{pokemon.id}
           </GS.PokemonNumber>
-          <GS.PokemonName $font="title_4">{pokemon.data?.name}</GS.PokemonName>
+          <GS.PokemonName $font="title_4">{pokemon.name}</GS.PokemonName>
         </S.PokemonInfo>
         <S.TypesGroup>
-          {pokemon.data?.types.map((type: any, index: number) => {
+          {pokemon.types.map((type: any, index: number) => {
             return (
               <GS.TypeCard key={index} type={type.type.name}>
                 {type.type.name}

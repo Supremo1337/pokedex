@@ -24,6 +24,7 @@ export default function UniquePokemonInfo({ flavorText = "" }: ProfileProps) {
       .replace(/-\n/g, "-")
       .replace(/\n/g, " ");
   };
+
   return (
     <S.Content>
       <Wrapper>
@@ -33,7 +34,7 @@ export default function UniquePokemonInfo({ flavorText = "" }: ProfileProps) {
               uniquePokemon?.data?.id < 650
                 ? `url(${uniquePokemon.data?.sprites.other.dream_world.front_default} )` ||
                   ""
-                : `url(${uniquePokemon.data?.sprites.other["official-artwork"].front_default} || "")` ||
+                : `url(${uniquePokemon.data?.sprites.other?.["official-artwork"]?.front_default})` ||
                   ""
             }
           />

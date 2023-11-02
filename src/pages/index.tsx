@@ -2,7 +2,7 @@ import Head from "next/head";
 import SearchBar from "@/components/SearchBar";
 import FilterOptions from "@/components/FilterOptions";
 import CardPokemon from "@/components/CardPokemon";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import axios from "axios";
 import * as S from "@/components/CardPokemon/styles";
 import { usePokeApiRequest } from "@/components/contexts/pokeApiRequestContext";
@@ -15,20 +15,37 @@ interface PokemonLimitProps {
 }
 
 export default function Home() {
-  const { pokemons, setPokemons, allpokemons, getPokemons, loading } =
-    usePokeApiRequest();
+  const {
+    pokemons,
+    setPokemons,
+    allpokemons,
+    getPokemons,
+    loading,
+    id,
+    setId,
+    // limit,
+    // setLimit,
+    newData,
+    setLoading,
+  } = usePokeApiRequest();
   const [search, setSearch] = useState("");
   const [openPokemonProfileInDesktop, setOpenPokemonProfileInDesktop] =
     useState(false);
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [loadMore, SetLoadMore] = useState<boolean>(false);
+  // const [oldData, SetOldData] = useState<any[]>([]);
   const divInfiniteScrollRef = useRef<HTMLDivElement>(null);
-  const [id, setId] = useState(0);
+  // const [id, setId] = useState(0);
 
-  useEffect(() => {
-    getPokemons();
-  }, [getPokemons]);
+  const processPokemons = async () => {
+    setLoading(true);
+    const newPokemons = await getPokemons(pokemons.length + 1);
+    setPokemons((currentPokemons) => {
+      return [...currentPokemons, ...newPokemons];
+    });
+    setLoading(false);
+  };
 
-  // console.log(pokemons);
   const filterPokemonsByType = (type: string) => {
     // setSearch("");
     setSelectedType(type);
@@ -39,16 +56,14 @@ export default function Home() {
       // Condição para filtrar por tipo
       const typeCondition =
         selectedType && selectedType !== "type"
-          ? pokemon.data?.types.some(
-              (type: any) => type.type.name === selectedType
-            )
+          ? pokemon.types.some((type: any) => type.type.name === selectedType)
           : pokemons;
 
       // Condição para filtrar por pesquisa
       // const searchCondition =
       //   !search ||
-      //   pokemon.data?.name.toLowerCase().includes(search.toLowerCase()) ||
-      //   pokemon.data?.id.toString().includes(search);
+      //   pokemon.name.toLowerCase().includes(search.toLowerCase()) ||
+      //   pokemon.id.toString().includes(search);
 
       // Combinação das condições
       return typeCondition;
@@ -57,10 +72,15 @@ export default function Home() {
   useEffect(() => {
     const intersectionObserver = new IntersectionObserver(([entry]) => {
       const ratio = entry.intersectionRatio;
-      if (ratio > 0) {
+      if (ratio > 0 && !loading) {
         console.log("OLHAAA AQ ratio", ratio);
-        // limit = limit + 33;
-        // getPokemons();
+        processPokemons();
+        // setLimit((prevLimit) => prevLimit + 11);
+        // getPokemons(pokemons.length).then((newPokemons: any) => {
+        //   setPokemons([...pokemons, ...newPokemons]);
+        //   setLoading(true);
+        // });
+        // SetLoadMore(false);
       }
     });
 
@@ -68,9 +88,9 @@ export default function Home() {
       intersectionObserver.observe(divInfiniteScrollRef.current);
     }
     return () => {
-      intersectionObserver.disconnect;
+      intersectionObserver.disconnect();
     };
-  }, [divInfiniteScrollRef]);
+  }, [divInfiniteScrollRef, loading]);
 
   function handelKeyPress() {
     if (search === "") {
@@ -79,8 +99,8 @@ export default function Home() {
     } else {
       const filteredPokemons = pokemons.filter(
         (pokemon) =>
-          pokemon.data?.name.toLowerCase().includes(search.toLowerCase()) ||
-          pokemon.data?.id.toString().includes(search)
+          pokemon.name.toLowerCase().includes(search.toLowerCase()) ||
+          pokemon.id.toString().includes(search)
       );
       setPokemons(filteredPokemons);
       // console.log("Pokemons Pesquisados", filteredPokemons);
@@ -109,7 +129,7 @@ export default function Home() {
 
   const wide = useWindowWide();
 
-  // console.log(pokemons.map((pokemon) => pokemon.data?.id));
+  // console.log(pokemons.map((pokemon) => pokemon.id));
   // console.log("AQQQ O IDDD", id);
 
   return (
@@ -121,6 +141,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* {console.log(wide)} */}
+
       <SearchBar
         onClick={() => handelKeyPress()}
         onKeyDown={(e: KeyboardEvent) => {
@@ -132,27 +153,19 @@ export default function Home() {
       <FilterOptions onChangeType={filterPokemonsByType} />
       <S.Wrapper>
         <S.Container>
-          {loading ? (
-            <>
-              {pokemonFiltrado.map((pokemon, index) => {
-                return (
-                  <CardPokemon
-                    onClick={() => {
-                      setOpenPokemonProfileInDesktop(
-                        !openPokemonProfileInDesktop
-                      );
-                      setId(pokemon.data?.id);
-                    }}
-                    sizeScren={wide}
-                    key={index}
-                    pokemon={pokemon}
-                  />
-                );
-              })}
-            </>
-          ) : (
-            "loading..."
-          )}
+          {pokemonFiltrado.map((pokemon, index) => {
+            return (
+              <CardPokemon
+                onClick={() => {
+                  setOpenPokemonProfileInDesktop(true);
+                  setId(pokemon.id);
+                }}
+                sizeScreen={wide}
+                key={index}
+                pokemon={pokemon}
+              />
+            );
+          })}
         </S.Container>
         {openPokemonProfileInDesktop && wide >= 1024 ? (
           <S.WrapperProfileComponent>
@@ -160,7 +173,8 @@ export default function Home() {
           </S.WrapperProfileComponent>
         ) : null}
       </S.Wrapper>
-      {pokemonFiltrado.length > 16 ? <div ref={divInfiniteScrollRef} /> : ""}
+
+      <div ref={divInfiniteScrollRef} />
     </>
   );
 }

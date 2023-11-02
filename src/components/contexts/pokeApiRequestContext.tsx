@@ -16,7 +16,7 @@ interface PokeApiRequestContextData {
   setPokemons: Dispatch<SetStateAction<any[]>>;
   allpokemons: any[];
   setAllPokemons: Dispatch<SetStateAction<any[]>>;
-  getPokemons: () => void;
+  getPokemons: (start: number, end?: number) => Promise<any[]>;
   getEvoluionChain: () => void;
   loading: boolean;
   setLoading: Dispatch<SetStateAction<boolean>>;
@@ -31,6 +31,12 @@ interface PokeApiRequestContextData {
   previusAndNextPokemon: IPokemonInfoProps[];
   setPreviusAndNextPokemon: Dispatch<any>;
   getNextAndPreviusPokemon: () => void;
+  id: number;
+  setId: Dispatch<SetStateAction<number>>;
+  // limit: number;
+  // setLimit: Dispatch<SetStateAction<number>>;
+  newData: any[];
+  setNewData: Dispatch<SetStateAction<any[]>>;
 }
 
 export interface PokemonsProps {
@@ -54,60 +60,71 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
   const [evolutionChainURLId, setEvolutionChainURLId] = useState<any>([]);
   const [uniquePokemon, setUniquePokemon] = useState<any>([]);
   const [previusAndNextPokemon, setPreviusAndNextPokemon] = useState<any>([]);
+  const [id, setId] = useState(0);
+  // const [limit, setLimit] = useState(1);
+  const [newData, setNewData] = useState<any[]>([]);
 
-  var limit = 33;
+  // var limit = 33;
 
-  const getPokemons = useCallback(() => {
-    setLoading(false);
-    var endpoints = [];
+  const getPokemons = useCallback(async (start: number, end?: number) => {
+    let endpoints = [];
+    end = end || start + 9;
 
-    for (var i = 1; i < limit; i++) {
+    for (let i = start; i <= end; i++) {
       endpoints.push(`https://pokeapi.co/api/v2/pokemon/${i}/`);
     }
-    var response = axios
-      .all(
-        endpoints.map(
-          async (endpoint) => await axios.get<PokemonsProps>(endpoint)
-        )
-      )
-      .then((res) => {
-        // setPokemons([...res, res]);
-        // setAllPokemons([...res, res]);
-        // setPokemons((prevPokemons) => [...prevPokemons, ...res]);
-        // setAllPokemons((prevAllPokemons) => [...prevAllPokemons, ...res]);
-        setPokemons(res);
-        setAllPokemons(res);
-        // setPokemons((prevPokemons) => [...prevPokemons, ...res]);
-        // console.log(res);
-        setLoading(true);
-      });
-    // console.log(endpoints);
-  }, [limit]);
 
-  // useEffect(() => {
-  //   getPokemons();
-  // }, [getPokemons]);
+    const response = await Promise.all(
+      endpoints.map(async (endpoint) => {
+        const { data } = await axios.get(endpoint);
+        return data;
+      })
+    );
+
+    return response;
+    // return axios
+    //   .all(
+    //     endpoints.map(
+    //       async (endpoint) => await axios.get<PokemonsProps>(endpoint)
+    //     )
+    //   )
+    //   .then((res) => {
+    //     setPokemons(res);
+    //     setAllPokemons(res);
+    //     setLoading(true);
+    //     return res;
+    //   });
+  }, []);
 
   const getEvoluionChain = useCallback(async () => {
     setLoading(false);
-    const response = await axios
-      .get<IPokemonInfoProps>(
+
+    try {
+      const response = await axios.get<IPokemonInfoProps>(
         `https://pokeapi.co/api/v2/evolution-chain/${evolutionChainURLId}`
-      )
-      .then((res) => {
-        if (res.data && res.data.chain) {
-          setEvolutionChain(res);
-          let namePokemonsEvolutions: any[] = [];
-          const chain = res.data.chain;
+      );
 
-          if (chain) {
-            namePokemonsEvolutions.push(chain.species.name);
+      if (response.data && response.data.chain) {
+        setEvolutionChain(response.data);
+        let namePokemonsEvolutions: any[] = [];
+        const chain = response.data.chain;
 
-            if (chain.evolves_to && chain.evolves_to.length > 0) {
-              namePokemonsEvolutions.push(
-                chain.evolves_to.map((res) => res.species.name)
-              );
-            }
+        if (chain) {
+          namePokemonsEvolutions.push(chain.species.name);
+
+          if (chain.evolves_to && chain.evolves_to.length > 0) {
+            namePokemonsEvolutions.push(
+              chain.evolves_to.map((res) => res.species.name)
+            );
+
+            console.log(chain.evolves_to.map((res) => res.evolves_to));
+          }
+          if (chain.evolves_to && chain.evolves_to[0]?.evolves_to.length >= 1) {
+            namePokemonsEvolutions.push(
+              chain.evolves_to.map((res) =>
+                res.evolves_to.map((res) => res.species.name)
+              )
+            );
           }
 
           if (namePokemonsEvolutions[1]?.length > 1) {
@@ -123,13 +140,7 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
                 (res: any) => res.data.sprites.other.dream_world.front_default
               );
               setPokemonEvolution(pokemonEvolutionImages);
-
-              setLoading(true);
-              // console.log("aqqqq");
             });
-            // console.log(namePokemonsEvolutions[0]);
-
-            ("fluxo do slowpoke");
           } else {
             const urlPokemonEvolutions = namePokemonsEvolutions.map((name) =>
               axios.get(`https://pokeapi.co/api/v2/pokemon/${name}/`)
@@ -144,41 +155,40 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
               setLoading(true);
               // console.log("aqqqq");
             });
-            ("fluxonormal");
           }
-        } else {
-          setLoading(true);
         }
-      });
-  }, [evolutionChainURLId, setLoading, setEvolutionChain, setPokemonEvolution]);
+      } else {
+        // setLoading(true);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar dados:", error);
+      // Certifique-se de definir setLoading como verdadeiro em caso de erro
+      setLoading(true);
+    }
+  }, [evolutionChainURLId, setEvolutionChain, setPokemonEvolution]);
 
   const getNextAndPreviusPokemon = useCallback(async () => {
-    setLoading(false);
     var endpoints = [];
     if (uniquePokemon.data?.id) {
       if (uniquePokemon.data?.id !== 1) {
-        await endpoints.push(
+        endpoints.push(
           `https://pokeapi.co/api/v2/pokemon/${uniquePokemon.data?.id - 1}/`,
           `https://pokeapi.co/api/v2/pokemon/${uniquePokemon.data?.id + 1}/`
         );
       } else {
-        await endpoints.push(
+        endpoints.push(
           `https://pokeapi.co/api/v2/pokemon/${uniquePokemon.data?.id + 1}/`
         );
       }
 
-      var response = axios
-        .all(
-          endpoints.map(
-            async (endpoint) => await axios.get<PokemonsProps>(endpoint)
-          )
-        )
-        .then((res) => {
-          setPreviusAndNextPokemon(res);
-          setLoading(true);
-        });
+      var response = await axios.all(
+        endpoints.map((endpoint) => axios.get<PokemonsProps>(endpoint))
+      );
+
+      setPreviusAndNextPokemon(response);
+      // setLoading(true);
     }
-  }, [setLoading, uniquePokemon.data?.id]);
+  }, [uniquePokemon.data?.id]);
 
   return (
     <PokeApiRequestContext.Provider
@@ -202,6 +212,12 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
         previusAndNextPokemon,
         setPreviusAndNextPokemon,
         getNextAndPreviusPokemon,
+        id,
+        setId,
+        // limit,
+        // setLimit,
+        newData,
+        setNewData,
       }}
     >
       {children}

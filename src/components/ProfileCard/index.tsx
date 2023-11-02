@@ -9,6 +9,7 @@ import axios from "axios";
 import EvolutionChain from "../EvolutionChain";
 import { PokemonSpeciesData } from "@/pages/profile/[id]";
 import NextAndPreviousPokemon from "../NextAndPreviousPokemon";
+import NextAndPreviousPokemonDesktop from "../NextAndPreviousPokemon";
 
 interface ProfileCardProps {
   id: number;
@@ -88,7 +89,7 @@ export function ProfileCard({ id = 0 }: ProfileCardProps) {
             evolutionChain={evolutionChain}
             pokemonEvolution={pokemonEvolution}
           />
-          <NextAndPreviousPokemon />
+          <NextAndPreviousPokemonDesktop />
         </>
       ) : (
         "Loading..."
