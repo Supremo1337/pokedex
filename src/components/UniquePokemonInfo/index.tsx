@@ -32,21 +32,21 @@ export default function UniquePokemonInfo({ flavorText = "" }: ProfileProps) {
           <S.PokemonImage
             $bgImage={
               uniquePokemon?.data?.id < 650
-                ? `url(${uniquePokemon.data?.sprites.other.dream_world.front_default} )` ||
+                ? `url(${uniquePokemon?.sprites.other.dream_world.front_default} )` ||
                   ""
-                : `url(${uniquePokemon.data?.sprites.other?.["official-artwork"]?.front_default})` ||
+                : `url(${uniquePokemon?.sprites.other?.["official-artwork"]?.front_default})` ||
                   ""
             }
           />
         </S.BackgroundPokemon>
       </Wrapper>
       <GS.PokemonNumber $font="paragraph_2">
-        Nº 0{uniquePokemon.data?.id}
+        Nº 0{uniquePokemon?.id}
       </GS.PokemonNumber>
-      <GS.Titles $font="title_2">{uniquePokemon.data?.name}</GS.Titles>
+      <GS.Titles $font="title_2">{uniquePokemon?.name}</GS.Titles>
 
       <S.TypesGroup>
-        {uniquePokemon.data?.types.map((type: any, index: number) => {
+        {uniquePokemon?.types.map((type: any, index: number) => {
           return (
             <GS.TypeCard key={index} type={type.type.name}>
               {type.type.name}

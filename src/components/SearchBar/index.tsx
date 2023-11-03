@@ -3,9 +3,9 @@ import * as S from "./styles";
 
 interface SearchBarProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onClick?: any;
+  onClick?: () => void;
   value: string;
-  onKeyDown: any;
+  onKeyDown: (e: KeyboardEvent<Element>) => void;
 }
 
 export default function SearchBar({

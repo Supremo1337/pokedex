@@ -9,7 +9,7 @@ import UniquePokemonInfo from "@/components/UniquePokemonInfo";
 import axios from "axios";
 import UniquePokemonStats from "@/components/UniquePokemonStats";
 import EvolutionChain from "@/components/EvolutionChain";
-import NextAndPreviousPokemon from "@/components/NextAndPreviousPokemonDesktop";
+import NextAndPreviousPokemon from "@/components/NextAndPreviousPokemon";
 
 export interface PokemonSpeciesData {
   flavor_text_entries: Array<{
@@ -39,46 +39,57 @@ export default function Profile() {
   const [flavorText, setFlavorText] = useState<any>([]);
 
   const getPokemon = useCallback(async () => {
+    setLoading(false);
+    // const response = await axios
+    //   .get<PokemonSpeciesData>(`https://pokeapi.co/api/v2/pokemon/${id}/`)
+    //   .then((res) => {
+    //     setUniquePokemon(res);
+    //     setLoading(true);
+    //   });
+    const { data } = await axios.get<PokemonSpeciesData>(
+      `https://pokeapi.co/api/v2/pokemon/${id}/`
+    );
+    console.log("Dataaaa", data);
+    return data;
+  }, [id]);
+
+  const fetchPokemonData = useCallback(async () => {
+    const uniquePokemonData = await getPokemon();
+    setUniquePokemon(uniquePokemonData);
     // setLoading(false);
-    const response = await axios
-      .get<PokemonSpeciesData>(`https://pokeapi.co/api/v2/pokemon/${id}/`)
-      .then((res) => {
-        setUniquePokemon(res);
-        // setLoading(true);
-      });
-  }, [id, setUniquePokemon]);
+  }, [getPokemon]);
 
   const getPokemonsSpecies = useCallback(async () => {
-    const response = await axios
-      .get<PokemonSpeciesData>(
-        `https://pokeapi.co/api/v2/pokemon-species/${id}/`
+    const { data } = await axios.get<PokemonSpeciesData>(
+      `https://pokeapi.co/api/v2/pokemon-species/${id}/`
+    );
+    console.log(data);
+    return data;
+  }, [id]);
+
+  const fetchDataPokemonSpecies = useCallback(async () => {
+    // setLoading(true);
+    const pokemonsSpecies = await getPokemonsSpecies();
+    const filteredFlavorTextEntries =
+      pokemonsSpecies.flavor_text_entries.filter(
+        (element) => element.language.name === "en"
+      );
+    const flavorTextEntry: { flavor_text: string } | {} =
+      filteredFlavorTextEntries.length > 0 ? filteredFlavorTextEntries[0] : {};
+    const flavorText =
+      "flavor_text" in flavorTextEntry
+        ? (flavorTextEntry as { flavor_text: string }).flavor_text
+        : "";
+    setFlavorText(flavorText);
+    setEvolutionChainURLId(
+      pokemonsSpecies.evolution_chain.url.replace(
+        "https://pokeapi.co/api/v2/evolution-chain/",
+        ""
       )
-      .then((res) => {
-        if (res.data) {
-          const filteredFlavorTextEntries = res.data.flavor_text_entries.filter(
-            (element) => element.language.name === "en"
-          );
-          const flavorTextEntry: { flavor_text: string } | {} =
-            filteredFlavorTextEntries.length > 0
-              ? filteredFlavorTextEntries[0]
-              : {};
-
-          const flavorText =
-            "flavor_text" in flavorTextEntry
-              ? (flavorTextEntry as { flavor_text: string }).flavor_text
-              : "";
-
-          setFlavorText(flavorText);
-          // setLoading(true);
-        }
-        setEvolutionChainURLId(
-          res.data.evolution_chain.url.replace(
-            "https://pokeapi.co/api/v2/evolution-chain/",
-            ""
-          )
-        );
-      });
-  }, [id, setEvolutionChainURLId]);
+    );
+    console.log("espe", pokemonsSpecies);
+    // setLoading(false);
+  }, [getPokemonsSpecies]);
 
   const getPokemonData = useCallback(async () => {
     // Inicie o estado de carregamento como falso
@@ -86,8 +97,10 @@ export default function Profile() {
 
     try {
       // Realize todas as requisições necessárias
-      await getPokemon();
-      await getPokemonsSpecies();
+      // await getPokemon();
+      // await getPokemonsSpecies();
+      await fetchPokemonData();
+      await fetchDataPokemonSpecies();
       await getEvoluionChain();
       await getNextAndPreviusPokemon();
 
@@ -99,18 +112,14 @@ export default function Profile() {
       setLoading(true); // Certifique-se de definir setLoading como verdadeiro em caso de erro
     }
   }, [
-    getPokemon,
-    getPokemonsSpecies,
+    // getPokemon,
+    // getPokemonsSpecies,
+    fetchPokemonData,
+    fetchDataPokemonSpecies,
     getEvoluionChain,
     getNextAndPreviusPokemon,
     setLoading,
   ]);
-
-  useEffect(() => {
-    if (id) {
-      getPokemonData();
-    }
-  }, [id, getPokemonData]);
 
   useEffect(() => {
     if (id) {

@@ -1,4 +1,4 @@
-import { IPokemonInfoProps } from "@/interface";
+import { IPokemon, IPokemonInfoProps } from "@/interface";
 import axios from "axios";
 import {
   Dispatch,
@@ -12,7 +12,7 @@ import {
 } from "react";
 
 interface PokeApiRequestContextData {
-  pokemons: any[];
+  pokemons: IPokemon[];
   setPokemons: Dispatch<SetStateAction<any[]>>;
   allpokemons: any[];
   setAllPokemons: Dispatch<SetStateAction<any[]>>;
@@ -52,8 +52,8 @@ export const PokeApiRequestContext = createContext(
 );
 
 export function PokeApiRequestProvider({ children }: PropsWithChildren) {
-  const [pokemons, setPokemons] = useState<any[]>([]);
-  const [allpokemons, setAllPokemons] = useState<any[]>([]);
+  const [pokemons, setPokemons] = useState<IPokemon[]>([]);
+  const [allpokemons, setAllPokemons] = useState<IPokemon[]>([]);
   const [loading, setLoading] = useState(false);
   const [evolutionChain, setEvolutionChain] = useState<any>([]);
   const [pokemonEvolution, setPokemonEvolution] = useState<any>([]);
@@ -68,7 +68,7 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
 
   const getPokemons = useCallback(async (start: number, end?: number) => {
     let endpoints = [];
-    end = end || start + 9;
+    end = end || start + 31;
 
     for (let i = start; i <= end; i++) {
       endpoints.push(`https://pokeapi.co/api/v2/pokemon/${i}/`);
@@ -169,15 +169,15 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
 
   const getNextAndPreviusPokemon = useCallback(async () => {
     var endpoints = [];
-    if (uniquePokemon.data?.id) {
-      if (uniquePokemon.data?.id !== 1) {
+    if (uniquePokemon?.id) {
+      if (uniquePokemon?.id !== 1) {
         endpoints.push(
-          `https://pokeapi.co/api/v2/pokemon/${uniquePokemon.data?.id - 1}/`,
-          `https://pokeapi.co/api/v2/pokemon/${uniquePokemon.data?.id + 1}/`
+          `https://pokeapi.co/api/v2/pokemon/${uniquePokemon?.id - 1}/`,
+          `https://pokeapi.co/api/v2/pokemon/${uniquePokemon?.id + 1}/`
         );
       } else {
         endpoints.push(
-          `https://pokeapi.co/api/v2/pokemon/${uniquePokemon.data?.id + 1}/`
+          `https://pokeapi.co/api/v2/pokemon/${uniquePokemon?.id + 1}/`
         );
       }
 
@@ -188,7 +188,7 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
       setPreviusAndNextPokemon(response);
       // setLoading(true);
     }
-  }, [uniquePokemon.data?.id]);
+  }, [uniquePokemon?.id]);
 
   return (
     <PokeApiRequestContext.Provider

@@ -3,7 +3,7 @@ import * as S from "./styles";
 import axios from "axios";
 import Link from "next/link";
 import * as GS from "@/styles/globalStyles";
-import { IPokemonInfoProps } from "@/interface";
+import { IPokemon, IPokemonInfoProps } from "@/interface";
 
 export interface Chain {
   species: {
@@ -13,7 +13,7 @@ export interface Chain {
 }
 
 export interface CardPokemonProps {
-  pokemon: IPokemonInfoProps;
+  pokemon: IPokemon;
   onClick: (e: React.MouseEvent<HTMLElement>) => void;
   sizeScreen: number;
 }
@@ -46,7 +46,7 @@ export default function CardPokemon({
           <GS.PokemonName $font="title_4">{pokemon.name}</GS.PokemonName>
         </S.PokemonInfo>
         <S.TypesGroup>
-          {pokemon.types.map((type: any, index: number) => {
+          {pokemon.types.map((type, index: number) => {
             return (
               <GS.TypeCard key={index} type={type.type.name}>
                 {type.type.name}

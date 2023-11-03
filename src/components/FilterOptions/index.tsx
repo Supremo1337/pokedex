@@ -45,7 +45,7 @@ export default function FilterOptions({
           onChange={(e) => onChangeType(e.target.value)}
         >
           <SelectOption value="type">Tipo</SelectOption>
-          {types.map((type: any, index) => {
+          {types.map((type, index) => {
             return (
               <SelectOption key={index} value={type.typeName}>
                 {type.typeName}

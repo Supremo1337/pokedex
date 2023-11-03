@@ -18,11 +18,11 @@ export default function UniquePokemonStats() {
   const [weaknessOfPokemon, setWeaknessOfPokemon] = useState<any[]>([]);
   const [weaknessOfPokemon4x, setWeaknessOfPokemon4x] = useState<any[]>([]);
 
-  const type0 = uniquePokemon.data?.types[0].type.name;
+  const type0 = uniquePokemon?.types[0].type.name;
   let type1 = "";
 
-  if (uniquePokemon.data?.types[1]) {
-    type1 = uniquePokemon.data.types[1]?.type.name;
+  if (uniquePokemon?.types[1]) {
+    type1 = uniquePokemon?.types[1]?.type.name;
   }
 
   const getTypes = useCallback(async () => {
@@ -143,9 +143,9 @@ export default function UniquePokemonStats() {
   return (
     <S.Content>
       <GS.Titles $font="title_3">Habilidades</GS.Titles>
-      {uniquePokemon.data?.abilities.length !== 3 ? (
+      {uniquePokemon?.abilities.length !== 3 ? (
         <S.GroupCardAbility>
-          {uniquePokemon.data?.abilities.map(
+          {uniquePokemon?.abilities.map(
             (ability: { ability: { name: string } }, index: number) => {
               return (
                 <S.CardAbility key={index}>
@@ -157,7 +157,7 @@ export default function UniquePokemonStats() {
         </S.GroupCardAbility>
       ) : (
         <S.GroupCardWith3Ability>
-          {uniquePokemon.data?.abilities.map(
+          {uniquePokemon?.abilities.map(
             (ability: { ability: { name: string } }, index: number) => {
               return (
                 <S.CardAbility key={index}>
@@ -171,11 +171,11 @@ export default function UniquePokemonStats() {
       <S.GroupStats>
         <S.GroupInfos>
           <GS.Titles $font="title_3">Altura</GS.Titles>
-          <GS.Description>{uniquePokemon.data?.height / 10} m</GS.Description>
+          <GS.Description>{uniquePokemon?.height / 10} m</GS.Description>
         </S.GroupInfos>
         <S.GroupInfos>
           <GS.Titles $font="title_3">Peso</GS.Titles>
-          <GS.Description>{uniquePokemon.data?.weight / 10} Kg</GS.Description>
+          <GS.Description>{uniquePokemon?.weight / 10} Kg</GS.Description>
         </S.GroupInfos>
         <S.GroupInfos>
           <GS.Titles $font="title_3">Fraquezas</GS.Titles>
@@ -227,9 +227,7 @@ export default function UniquePokemonStats() {
         </S.GroupInfos>
         <S.GroupInfos>
           <GS.Titles $font="title_3">Exp Base</GS.Titles>
-          <GS.Description>
-            {uniquePokemon.data?.base_experience} Exp
-          </GS.Description>
+          <GS.Description>{uniquePokemon?.base_experience} Exp</GS.Description>
         </S.GroupInfos>
       </S.GroupStats>
     </S.Content>

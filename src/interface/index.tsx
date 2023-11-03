@@ -139,9 +139,9 @@ export interface IPokemon {
     front_female?: string;
     front_shiny?: string;
     front_shiny_female?: string;
-    other?: {
-      dream_world?: {
-        front_default?: string;
+    other: {
+      dream_world: {
+        front_default: string;
         front_female?: string;
       };
       home?: {

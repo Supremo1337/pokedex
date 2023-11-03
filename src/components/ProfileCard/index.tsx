@@ -9,7 +9,7 @@ import axios from "axios";
 import EvolutionChain from "../EvolutionChain";
 import { PokemonSpeciesData } from "@/pages/profile/[id]";
 import NextAndPreviousPokemon from "../NextAndPreviousPokemon";
-import NextAndPreviousPokemonDesktop from "../NextAndPreviousPokemon";
+import NextAndPreviousPokemonDesktop from "../NextAndPreviousPokemonDesktop";
 
 interface ProfileCardProps {
   id: number;
