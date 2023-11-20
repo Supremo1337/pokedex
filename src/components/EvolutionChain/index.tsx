@@ -14,11 +14,11 @@ export default function EvolutionChain({
   evolutionChain,
   pokemonEvolution,
 }: EvolutionChainProps) {
-  const evolutionTrigger1 = evolutionChain.data?.chain?.evolves_to[0];
-  const evolutionTrigger2 =
-    evolutionChain.data?.chain.evolves_to[0]?.evolves_to[0];
+  const evolutionTrigger1 = evolutionChain.chain?.evolves_to[0];
+  const evolutionTrigger2 = evolutionChain.chain?.evolves_to[0]?.evolves_to[0];
 
-  // console.log(pokemonEvolution);
+  console.log("Sprites:", pokemonEvolution);
+
   return (
     <S.Content>
       <GS.Titles $font="title_3">Evoluções</GS.Titles>
@@ -36,7 +36,7 @@ export default function EvolutionChain({
                   {index === 0 && evolutionTrigger1 ? (
                     <GS.Description>
                       {
-                        evolutionChain.data?.chain?.evolves_to[0]
+                        evolutionChain?.chain?.evolves_to[0]
                           .evolution_details[0]?.trigger.name
                       }
                     </GS.Description>
@@ -44,7 +44,7 @@ export default function EvolutionChain({
                   {index === 1 && evolutionTrigger2 ? (
                     <GS.Description>
                       {
-                        evolutionChain.data?.chain.evolves_to[0].evolves_to[0]
+                        evolutionChain?.chain.evolves_to[0].evolves_to[0]
                           .evolution_details[0].trigger.name
                       }
                     </GS.Description>

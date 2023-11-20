@@ -18,6 +18,7 @@ export interface PokemonSpeciesData {
       name: string;
     };
   }>;
+  name: string;
   evolution_chain: {
     url: string;
   };
@@ -31,44 +32,43 @@ export default function Profile() {
     setLoading,
     pokemonEvolution,
     evolutionChain,
-    getEvoluionChain,
+    getEvolutionChain,
     setEvolutionChainURLId,
     setUniquePokemon,
     getNextAndPreviusPokemon,
+    evolutionChainURLId,
   } = usePokeApiRequest();
   const [flavorText, setFlavorText] = useState<any>([]);
 
   const getPokemon = useCallback(async () => {
-    setLoading(false);
-    // const response = await axios
-    //   .get<PokemonSpeciesData>(`https://pokeapi.co/api/v2/pokemon/${id}/`)
-    //   .then((res) => {
-    //     setUniquePokemon(res);
-    //     setLoading(true);
-    //   });
+    // Faz uma requisição para obter os dados do Pokémon
     const { data } = await axios.get<PokemonSpeciesData>(
       `https://pokeapi.co/api/v2/pokemon/${id}/`
     );
-    console.log("Dataaaa", data);
+
+    // Verifica se o nome do Pokémon contém um traço ("-")
+    if (data.name && data.name.includes("-")) {
+      // Remove tudo depois do traço
+      data.name = data.name.split("-")[0];
+    }
+
+    // Retorna os dados do Pokémon
     return data;
   }, [id]);
 
   const fetchPokemonData = useCallback(async () => {
     const uniquePokemonData = await getPokemon();
     setUniquePokemon(uniquePokemonData);
-    // setLoading(false);
   }, [getPokemon]);
 
   const getPokemonsSpecies = useCallback(async () => {
     const { data } = await axios.get<PokemonSpeciesData>(
       `https://pokeapi.co/api/v2/pokemon-species/${id}/`
     );
-    console.log(data);
     return data;
   }, [id]);
 
   const fetchDataPokemonSpecies = useCallback(async () => {
-    // setLoading(true);
     const pokemonsSpecies = await getPokemonsSpecies();
     const filteredFlavorTextEntries =
       pokemonsSpecies.flavor_text_entries.filter(
@@ -81,14 +81,13 @@ export default function Profile() {
         ? (flavorTextEntry as { flavor_text: string }).flavor_text
         : "";
     setFlavorText(flavorText);
+
     setEvolutionChainURLId(
       pokemonsSpecies.evolution_chain.url.replace(
         "https://pokeapi.co/api/v2/evolution-chain/",
         ""
       )
     );
-    console.log("espe", pokemonsSpecies);
-    // setLoading(false);
   }, [getPokemonsSpecies]);
 
   const getPokemonData = useCallback(async () => {
@@ -101,7 +100,7 @@ export default function Profile() {
       // await getPokemonsSpecies();
       await fetchPokemonData();
       await fetchDataPokemonSpecies();
-      await getEvoluionChain();
+      await getEvolutionChain();
       await getNextAndPreviusPokemon();
 
       // Atualize o estado de carregamento como verdadeiro quando todas as requisições forem concluídas
@@ -116,7 +115,7 @@ export default function Profile() {
     // getPokemonsSpecies,
     fetchPokemonData,
     fetchDataPokemonSpecies,
-    getEvoluionChain,
+    getEvolutionChain,
     getNextAndPreviusPokemon,
     setLoading,
   ]);
@@ -126,8 +125,6 @@ export default function Profile() {
       getPokemonData();
     }
   }, [id, getPokemonData]);
-
-  // console.log("NEXTT", previusAndNextPokemon);
 
   return (
     <>

@@ -17,7 +17,7 @@ interface PokeApiRequestContextData {
   allpokemons: any[];
   setAllPokemons: Dispatch<SetStateAction<any[]>>;
   getPokemons: (start: number, end?: number) => Promise<any[]>;
-  getEvoluionChain: () => void;
+  getEvolutionChain: () => void;
   loading: boolean;
   setLoading: Dispatch<SetStateAction<boolean>>;
   evolutionChain: IPokemonInfoProps;
@@ -26,7 +26,7 @@ interface PokeApiRequestContextData {
   setEvolutionChainURLId: Dispatch<any>;
   pokemonEvolution: [];
   setPokemonEvolution: Dispatch<any>;
-  uniquePokemon: IPokemonInfoProps;
+  uniquePokemon: IPokemon;
   setUniquePokemon: Dispatch<any>;
   previusAndNextPokemon: IPokemonInfoProps[];
   setPreviusAndNextPokemon: Dispatch<any>;
@@ -82,21 +82,17 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
     );
 
     return response;
-    // return axios
-    //   .all(
-    //     endpoints.map(
-    //       async (endpoint) => await axios.get<PokemonsProps>(endpoint)
-    //     )
-    //   )
-    //   .then((res) => {
-    //     setPokemons(res);
-    //     setAllPokemons(res);
-    //     setLoading(true);
-    //     return res;
-    //   });
   }, []);
 
-  const getEvoluionChain = useCallback(async () => {
+  // const getEvolutionChain = useCallback(async () => {
+  //   const { data } = await axios.get<IPokemonInfoProps>(
+  //     `https://pokeapi.co/api/v2/evolution-chain/${evolutionChainURLId}`
+  //   );
+  //   console.log(data);
+  //   return data;
+  // }, [evolutionChainURLId]);
+
+  const getEvolutionChain = useCallback(async () => {
     setLoading(false);
 
     try {
@@ -106,59 +102,86 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
 
       if (response.data && response.data.chain) {
         setEvolutionChain(response.data);
-        let namePokemonsEvolutions: any[] = [];
+        let idPokemonsEvolutions: any = [];
         const chain = response.data.chain;
 
+        function extractIdFromUrl(url: any) {
+          return url.replace("https://pokeapi.co/api/v2/pokemon-species/", "");
+        }
+
         if (chain) {
-          namePokemonsEvolutions.push(chain.species.name);
+          idPokemonsEvolutions.push(extractIdFromUrl(chain.species.url));
 
           if (chain.evolves_to && chain.evolves_to.length > 0) {
-            namePokemonsEvolutions.push(
-              chain.evolves_to.map((res) => res.species.name)
+            idPokemonsEvolutions.push(
+              chain.evolves_to.map((res) => extractIdFromUrl(res.species.url))
             );
-
-            console.log(chain.evolves_to.map((res) => res.evolves_to));
           }
+
           if (chain.evolves_to && chain.evolves_to[0]?.evolves_to.length >= 1) {
-            namePokemonsEvolutions.push(
+            idPokemonsEvolutions.push(
               chain.evolves_to.map((res) =>
-                res.evolves_to.map((res) => res.species.name)
+                res.evolves_to.map((res) => extractIdFromUrl(res.species.url))
               )
             );
           }
 
-          if (namePokemonsEvolutions[1]?.length > 1) {
-            const urlPokemonEvolutionsRest = [
-              namePokemonsEvolutions[0],
-              ...namePokemonsEvolutions[1],
-            ].map((name: string) =>
-              axios.get(`https://pokeapi.co/api/v2/pokemon/${name}/`)
+          console.log("aqqqqq", idPokemonsEvolutions);
+
+          function getEvolutionChainImages(ids: []) {
+            const urlPokemonEvolutions = ids.map((id: string) =>
+              axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)
             );
 
-            axios.all(urlPokemonEvolutionsRest).then((res) => {
-              const pokemonEvolutionImages = res.map(
-                (res: any) => res.data.sprites.other.dream_world.front_default
-              );
+            return axios.all(urlPokemonEvolutions).then((res) => {
+              const pokemonEvolutionImages = res.map((pokemon) => {
+                if (pokemon.data.id < 650) {
+                  return pokemon.data.sprites.other.dream_world.front_default;
+                }
+                if (pokemon.data.id >= 650) {
+                  if (pokemon.data.id !== 1013) {
+                    return pokemon.data.sprites.other["official-artwork"]
+                      .front_default;
+                  } else {
+                    return pokemon.data.sprites.front_default;
+                  }
+                }
+              });
               setPokemonEvolution(pokemonEvolutionImages);
-            });
-          } else {
-            const urlPokemonEvolutions = namePokemonsEvolutions.map((name) =>
-              axios.get(`https://pokeapi.co/api/v2/pokemon/${name}/`)
-            );
-
-            axios.all(urlPokemonEvolutions).then((res) => {
-              const pokemonEvolutionImages = res.map(
-                (res) => res.data.sprites.other.dream_world.front_default
-              );
-              setPokemonEvolution(pokemonEvolutionImages);
-
-              setLoading(true);
-              // console.log("aqqqq");
             });
           }
+
+          let idsToFetch: any = [];
+          if (idPokemonsEvolutions[1]?.length > 1) {
+            idsToFetch.push(
+              idPokemonsEvolutions[0],
+              ...idPokemonsEvolutions[1]
+            );
+            console.log(idsToFetch);
+            getEvolutionChainImages(idsToFetch);
+          } else if (idPokemonsEvolutions?.[2]?.[0]?.length > 1) {
+            idsToFetch.push(
+              idPokemonsEvolutions[0],
+              ...idPokemonsEvolutions[1],
+              ...idPokemonsEvolutions[2][0]
+            );
+            getEvolutionChainImages(idsToFetch);
+          } else {
+            getEvolutionChainImages(idPokemonsEvolutions);
+          }
+          if (idPokemonsEvolutions?.[2].length > 1) {
+            const checkPokemonAllReadyFetch = idsToFetch.filter((item: any[]) =>
+              idPokemonsEvolutions.includes(item)
+            );
+            if (checkPokemonAllReadyFetch) {
+              idsToFetch.push(
+                ...idPokemonsEvolutions[2][0],
+                ...idPokemonsEvolutions[2][1]
+              );
+              getEvolutionChainImages(idsToFetch);
+            }
+          }
         }
-      } else {
-        // setLoading(true);
       }
     } catch (error) {
       console.error("Erro ao buscar dados:", error);
@@ -204,7 +227,7 @@ export function PokeApiRequestProvider({ children }: PropsWithChildren) {
         setEvolutionChain,
         pokemonEvolution,
         setPokemonEvolution,
-        getEvoluionChain,
+        getEvolutionChain,
         evolutionChainURLId,
         setEvolutionChainURLId,
         uniquePokemon,

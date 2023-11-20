@@ -10,7 +10,7 @@ export default function NextAndPreviousPokemon() {
     usePokeApiRequest();
   const previusPokemonIsNextOnlyIfIdIs1 = previusAndNextPokemon?.[0]?.data;
   const nextPokemon = previusAndNextPokemon?.[1]?.data;
-  // console.log("NEXT AQ PORRA NO COMPONENT", previusPokemonIsNextOnlyIfIdIs1);
+  // console.log("NEXT AQ PORRA NO COMPONENT", previusPokemonIsNextOnlyIfIdIs1);]
   return (
     <S.Content>
       {uniquePokemon?.id !== 1 ? (
@@ -22,8 +22,14 @@ export default function NextAndPreviousPokemon() {
                 $width="45px"
                 $height="45px"
                 $bgImage={
-                  `url(${previusPokemonIsNextOnlyIfIdIs1?.sprites.versions["generation-iv"]["diamond-pearl"].front_default})` ||
-                  ""
+                  previusPokemonIsNextOnlyIfIdIs1?.id < 494
+                    ? `url(${previusPokemonIsNextOnlyIfIdIs1?.sprites.versions["generation-iv"]["diamond-pearl"].front_default})` ||
+                      ""
+                    : previusPokemonIsNextOnlyIfIdIs1?.id < 899
+                    ? `url(${previusPokemonIsNextOnlyIfIdIs1?.sprites.versions["generation-v"]["black-white"].front_default})` ||
+                      ""
+                    : `url(${previusPokemonIsNextOnlyIfIdIs1?.sprites.front_default})` ||
+                      ""
                 }
               />
               <GS.PokemonName $font="title_5">
@@ -35,37 +41,43 @@ export default function NextAndPreviousPokemon() {
               </GS.PokemonNumber>
             </S.ButtonDiv>
           </Link>
-          <S.Divider />
+          {uniquePokemon?.id !== 1017 ? <S.Divider /> : null}
         </>
       ) : null}
-
-      <Link href={`/profile/${uniquePokemon?.id + 1}`}>
-        <S.ButtonDiv>
-          <GS.PokemonNumber $font="paragraph_4">
-            #0
-            {uniquePokemon?.id !== 1
-              ? nextPokemon?.id
-              : previusPokemonIsNextOnlyIfIdIs1?.id}
-          </GS.PokemonNumber>
-          <GS.PokemonName $font="title_5">
-            {uniquePokemon?.id !== 1
-              ? nextPokemon?.name
-              : previusPokemonIsNextOnlyIfIdIs1?.name}
-          </GS.PokemonName>
-          <GS.PokemonImage
-            $width="45px"
-            $height="45px"
-            $bgImage={
-              uniquePokemon?.id !== 1
-                ? `url(${nextPokemon?.sprites.versions["generation-iv"]["diamond-pearl"].front_default})` ||
-                  ""
-                : `url(${previusPokemonIsNextOnlyIfIdIs1?.sprites.versions["generation-iv"]["diamond-pearl"].front_default})` ||
-                  ""
-            }
-          />
-          <S.ArrowIcon $isRight={true} />
-        </S.ButtonDiv>
-      </Link>
+      {uniquePokemon?.id !== 1017 ? (
+        <Link href={`/profile/${uniquePokemon?.id + 1}`}>
+          <S.ButtonDiv>
+            <GS.PokemonNumber $font="paragraph_4">
+              #0
+              {uniquePokemon?.id !== 1
+                ? nextPokemon?.id
+                : previusPokemonIsNextOnlyIfIdIs1?.id}
+            </GS.PokemonNumber>
+            <GS.PokemonName $font="title_5">
+              {uniquePokemon?.id !== 1
+                ? nextPokemon?.name
+                : previusPokemonIsNextOnlyIfIdIs1?.name}
+            </GS.PokemonName>
+            <GS.PokemonImage
+              $width="45px"
+              $height="45px"
+              $bgImage={
+                uniquePokemon?.id !== 1
+                  ? nextPokemon?.id < 494
+                    ? `url(${nextPokemon?.sprites.versions["generation-iv"]["diamond-pearl"].front_default})` ||
+                      ""
+                    : nextPokemon?.id < 899
+                    ? `url(${nextPokemon?.sprites.versions["generation-v"]["black-white"].front_default})` ||
+                      ""
+                    : `url(${nextPokemon?.sprites.front_default})` || ""
+                  : `url(${previusPokemonIsNextOnlyIfIdIs1?.sprites.versions["generation-iv"]["diamond-pearl"].front_default})` ||
+                    ""
+              }
+            />
+            <S.ArrowIcon $isRight={true} />
+          </S.ButtonDiv>
+        </Link>
+      ) : null}
     </S.Content>
   );
 }

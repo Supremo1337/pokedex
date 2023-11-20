@@ -15,11 +15,6 @@ import { usePokeApiRequest } from "@/components/contexts/pokeApiRequestContext";
 import Profile from "./profile/[id]";
 import { ProfileCard } from "@/components/ProfileCard";
 
-interface PokemonLimitProps {
-  limit: number;
-  offSet: number;
-}
-
 export default function Home() {
   const {
     pokemons,
@@ -70,12 +65,6 @@ export default function Home() {
       if (ratio > 0 && !loading) {
         console.log("OLHAAA AQ ratio", ratio);
         processPokemons();
-        // setLimit((prevLimit) => prevLimit + 11);
-        // getPokemons(pokemons.length).then((newPokemons: any) => {
-        //   setPokemons([...pokemons, ...newPokemons]);
-        //   setLoading(true);
-        // });
-        // SetLoadMore(false);
       }
     });
 
@@ -172,7 +161,7 @@ export default function Home() {
         ) : null}
       </S.Wrapper>
 
-      {/* <div ref={divInfiniteScrollRef} /> */}
+      <div ref={divInfiniteScrollRef} />
     </>
   );
 }

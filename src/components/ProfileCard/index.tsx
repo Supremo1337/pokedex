@@ -22,13 +22,15 @@ export function ProfileCard({ id = 0 }: ProfileCardProps) {
     setLoading,
     pokemonEvolution,
     evolutionChain,
-    getEvoluionChain,
+    setEvolutionChain,
+    getEvolutionChain,
     setEvolutionChainURLId,
     uniquePokemon,
     setUniquePokemon,
     getNextAndPreviusPokemon,
+    setPokemonEvolution,
   } = usePokeApiRequest();
-  const [flavorText, setFlavorText] = useState<any>([]);
+  const [flavorText, setFlavorText] = useState<string>("");
 
   const getPokemonsSpecies = useCallback(async () => {
     setLoading(false);
@@ -63,18 +65,84 @@ export function ProfileCard({ id = 0 }: ProfileCardProps) {
       });
   }, [id, setLoading, setEvolutionChainURLId]);
 
+  // const fetchEvoluionChainData = useCallback(async () => {
+  //   setLoading(false);
+  //   const evolutionChainData = await getEvolutionChain();
+  //   console.log("aaa", evolutionChainData);
+  //   setEvolutionChain(evolutionChainData);
+  //   if (evolutionChain && evolutionChain.chain) {
+  //     // setEvolutionChain(response.data);
+  //     let namePokemonsEvolutions: any[] = [];
+  //     const chain = evolutionChain.chain;
+
+  //     if (chain) {
+  //       namePokemonsEvolutions.push(chain.species.name);
+
+  //       if (chain.evolves_to && chain.evolves_to.length > 0) {
+  //         namePokemonsEvolutions.push(
+  //           chain.evolves_to.map((res) => res.species.name)
+  //         );
+
+  //         console.log(chain.evolves_to.map((res) => res.evolves_to));
+  //       }
+  //       if (chain.evolves_to && chain.evolves_to[0]?.evolves_to.length >= 1) {
+  //         namePokemonsEvolutions.push(
+  //           chain.evolves_to.map((res) =>
+  //             res.evolves_to.map((res) => res.species.name)
+  //           )
+  //         );
+  //       }
+
+  //       if (namePokemonsEvolutions[1]?.length > 1) {
+  //         const urlPokemonEvolutionsRest = [
+  //           namePokemonsEvolutions[0],
+  //           ...namePokemonsEvolutions[1],
+  //         ].map((name: string) =>
+  //           axios.get(`https://pokeapi.co/api/v2/pokemon/${name}/`)
+  //         );
+
+  //         axios.all(urlPokemonEvolutionsRest).then((res) => {
+  //           const pokemonEvolutionImages = res.map(
+  //             (res: any) => res.data.sprites.other.dream_world.front_default
+  //           );
+  //           setPokemonEvolution(pokemonEvolutionImages);
+  //         });
+  //       } else {
+  //         const urlPokemonEvolutions = namePokemonsEvolutions.map((name) =>
+  //           axios.get(`https://pokeapi.co/api/v2/pokemon/${name}/`)
+  //         );
+
+  //         axios.all(urlPokemonEvolutions).then((res) => {
+  //           const pokemonEvolutionImages = res.map(
+  //             (res) => res.data.sprites.other.dream_world.front_default
+  //           );
+  //           setPokemonEvolution(pokemonEvolutionImages);
+
+  //           setLoading(true);
+  //           // console.log("aqqqq");
+  //         });
+  //       }
+  //     }
+  //   } else {
+  //     // setLoading(true);
+  //   }
+  //   setLoading(true);
+  // }, [setEvolutionChain, setPokemonEvolution]);
+
   useEffect(() => {
     if (id) {
       setUniquePokemon(pokemons[id - 1]);
       getPokemonsSpecies();
-      getEvoluionChain();
+      getEvolutionChain();
+      // fetchEvoluionChainData();
       getNextAndPreviusPokemon();
     }
   }, [
     id,
     pokemons,
     getPokemonsSpecies,
-    getEvoluionChain,
+    getEvolutionChain,
+    // fetchEvoluionChainData,
     getNextAndPreviusPokemon,
     setUniquePokemon,
   ]);

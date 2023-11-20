@@ -25,8 +25,14 @@ export default function NextAndPreviousPokemonDesktop() {
               $width="45px"
               $height="45px"
               $bgImage={
-                `url(${previusPokemonIsNextOnlyIfIdIs1?.sprites.versions["generation-iv"]["diamond-pearl"].front_default})` ||
-                ""
+                previusPokemonIsNextOnlyIfIdIs1?.id < 494
+                  ? `url(${previusPokemonIsNextOnlyIfIdIs1?.sprites.versions["generation-iv"]["diamond-pearl"].front_default})` ||
+                    ""
+                  : previusPokemonIsNextOnlyIfIdIs1?.id < 899
+                  ? `url(${previusPokemonIsNextOnlyIfIdIs1?.sprites.versions["generation-v"]["black-white"].front_default})` ||
+                    ""
+                  : `url(${previusPokemonIsNextOnlyIfIdIs1?.sprites.front_default})` ||
+                    ""
               }
             />
             <GS.PokemonName $font="title_5">
@@ -37,39 +43,47 @@ export default function NextAndPreviousPokemonDesktop() {
               {previusPokemonIsNextOnlyIfIdIs1?.id}
             </GS.PokemonNumber>
           </S.ButtonDiv>
-          <S.Divider />
+          {uniquePokemon?.id !== 1017 ? <S.Divider /> : null}
         </>
       ) : null}
-
-      <S.ButtonDiv
-        onClick={() => {
-          setId(uniquePokemon?.id + 1);
-        }}
-      >
-        <GS.PokemonNumber $font="paragraph_4">
-          #0
-          {uniquePokemon?.id !== 1
-            ? nextPokemon?.id
-            : previusPokemonIsNextOnlyIfIdIs1?.id}
-        </GS.PokemonNumber>
-        <GS.PokemonName $font="title_5">
-          {uniquePokemon?.id !== 1
-            ? nextPokemon?.name
-            : previusPokemonIsNextOnlyIfIdIs1?.name}
-        </GS.PokemonName>
-        <GS.PokemonImage
-          $width="45px"
-          $height="45px"
-          $bgImage={
-            uniquePokemon?.id !== 1
-              ? `url(${nextPokemon?.sprites.versions["generation-iv"]["diamond-pearl"].front_default})` ||
-                ""
-              : `url(${previusPokemonIsNextOnlyIfIdIs1?.sprites.versions["generation-iv"]["diamond-pearl"].front_default})` ||
-                ""
-          }
-        />
-        <S.ArrowIcon $isRight={true} />
-      </S.ButtonDiv>
+      {uniquePokemon?.id !== 1017 ? (
+        <>
+          <S.ButtonDiv
+            onClick={() => {
+              setId(uniquePokemon?.id + 1);
+            }}
+          >
+            <GS.PokemonNumber $font="paragraph_4">
+              #0
+              {uniquePokemon?.id !== 1
+                ? nextPokemon?.id
+                : previusPokemonIsNextOnlyIfIdIs1?.id}
+            </GS.PokemonNumber>
+            <GS.PokemonName $font="title_5">
+              {uniquePokemon?.id !== 1
+                ? nextPokemon?.name
+                : previusPokemonIsNextOnlyIfIdIs1?.name}
+            </GS.PokemonName>
+            <GS.PokemonImage
+              $width="45px"
+              $height="45px"
+              $bgImage={
+                uniquePokemon?.id !== 1
+                  ? nextPokemon?.id < 494
+                    ? `url(${nextPokemon?.sprites.versions["generation-iv"]["diamond-pearl"].front_default})` ||
+                      ""
+                    : nextPokemon?.id < 899
+                    ? `url(${nextPokemon?.sprites.versions["generation-v"]["black-white"].front_default})` ||
+                      ""
+                    : `url(${nextPokemon?.sprites.front_default})` || ""
+                  : `url(${previusPokemonIsNextOnlyIfIdIs1?.sprites.versions["generation-iv"]["diamond-pearl"].front_default})` ||
+                    ""
+              }
+            />
+            <S.ArrowIcon $isRight={true} />
+          </S.ButtonDiv>
+        </>
+      ) : null}
     </S.Content>
   );
 }

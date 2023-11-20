@@ -8,6 +8,7 @@ import { IPokemon, IPokemonInfoProps } from "@/interface";
 export interface Chain {
   species: {
     name: string;
+    url: string;
   };
   evolves_to: Chain[];
 }
